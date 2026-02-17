@@ -9,16 +9,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin:0; padding:0; box-sizing:border-box; }
     body {
-      font-family: 'Google Sans', system-ui, -apple-system, sans-serif;
-      font-weight: 400;
-      background: #f8f9fc;
-      color: #000000;
+      font-family: 'Google Sans', system-ui, sans-serif;
+      background: linear-gradient(135deg, #f0f4ff 0%, #e6ecff 100%);
+      color: #0f1a3a;
       height: 100vh;
       overflow: hidden;
       touch-action: manipulation;
@@ -32,86 +27,91 @@
     .slide {
       position: absolute;
       inset: 0;
-      width: 100%;
-      height: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 20px 16px;
+      padding: 24px 20px;
       opacity: 0;
-      transform: translateX(60px);
-      transition: all 0.55s cubic-bezier(0.34, 1.12, 0.4, 1);
+      transform: scale(0.92) translateY(30px);
+      transition: all 0.65s cubic-bezier(0.34, 1.56, 0.64, 1);
       pointer-events: none;
     }
     .slide.active {
       opacity: 1;
-      transform: translateX(0);
+      transform: scale(1) translateY(0);
       pointer-events: auto;
     }
     .slide.prev {
       opacity: 0;
-      transform: translateX(-60px);
+      transform: scale(0.92) translateY(-30px);
     }
     .lottie-container {
-      width: 220px;
-      height: 220px;
-      margin-bottom: 52px;
+      width: 240px;
+      height: 240px;
+      margin-bottom: 48px;
+      filter: drop-shadow(0 12px 32px rgba(26,115,232,0.28));
     }
     h1 {
-      font-size: 26px;
-      font-weight: 500;
-      color: #000000;
+      font-size: 28px;
+      font-weight: 600;
       text-align: center;
-      margin-bottom: 64px;
-      line-height: 1.32;
-      padding: 0 16px;
+      margin-bottom: 56px;
+      line-height: 1.28;
+      letter-spacing: -0.2px;
+      color: #0f1a3a;
     }
     .btn {
-      min-width: 220px;
-      max-width: 320px;
-      padding: 16px 36px;
-      font-size: 19px;
-      font-weight: 500;
+      min-width: 240px;
+      padding: 18px 48px;
+      font-size: 20px;
+      font-weight: 600;
       color: white;
-      background: linear-gradient(145deg, #1a73e8, #0d65d6);
+      background: linear-gradient(145deg, #4285f4, #1967d2);
       border: none;
-      border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(26, 115, 232, 0.25);
+      border-radius: 16px;
+      box-shadow: 0 10px 28px rgba(66,133,244,0.32);
       cursor: pointer;
-      transition: all 0.22s ease;
+      transition: all 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       user-select: none;
       touch-action: manipulation;
     }
     .btn:active {
-      transform: scale(0.94) translateY(3px);
-      box-shadow: 0 4px 12px rgba(26, 115, 232, 0.4);
-      background: linear-gradient(145deg, #0d65d6, #1a73e8);
+      transform: scale(0.92) translateY(4px);
+      box-shadow: 0 6px 16px rgba(25,103,210,0.5);
+      background: linear-gradient(145deg, #1967d2, #4285f4);
+    }
+    .btn.pulse {
+      animation: pulse 1.2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50%      { transform: scale(1.06); }
     }
     .progress {
       position: absolute;
-      bottom: 36px;
+      bottom: 40px;
       left: 50%;
       transform: translateX(-50%);
       display: flex;
-      gap: 12px;
+      gap: 14px;
     }
     .dot {
-      width: 9px;
-      height: 9px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
-      background: #d0d7e0;
-      transition: all 0.4s ease;
+      background: rgba(66,133,244,0.3);
+      transition: all 0.5s ease;
     }
     .dot.active {
-      background: #1a73e8;
-      transform: scale(1.55);
-      box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.2);
+      background: #4285f4;
+      transform: scale(1.8);
+      box-shadow: 0 0 0 6px rgba(66,133,244,0.22);
     }
     @media (min-width: 500px) {
-      .lottie-container { width: 260px; height: 260px; }
-      h1 { font-size: 30px; }
-      .btn { min-width: 260px; padding: 18px 48px; font-size: 20px; }
+      .lottie-container { width: 280px; height: 280px; }
+      h1 { font-size: 34px; }
+      .btn { min-width: 280px; padding: 20px 60px; font-size: 22px; }
     }
   </style>
 </head>
@@ -120,42 +120,42 @@
 <div class="slider" id="slider">
   <div class="slide" data-index="0">
     <div class="lottie-container">
-      <lottie-player src="./hello.json" background="transparent" speed="0.8" loop autoplay></lottie-player>
+      <lottie-player src="./hello.json" background="transparent" speed="0.9" loop autoplay></lottie-player>
     </div>
-    <h1>Приветствуем вас в DxS VPN!</h1>
-    <button class="btn" data-action="next">Привет</button>
+    <h1>Привет! Это DxS VPN</h1>
+    <button class="btn" data-action="next">Поехали!</button>
   </div>
 
   <div class="slide" data-index="1">
     <div class="lottie-container">
-      <lottie-player src="./hello.json" background="transparent" speed="0.8" loop autoplay></lottie-player>
+      <lottie-player src="./hello.json" background="transparent" speed="0.9" loop autoplay></lottie-player>
     </div>
-    <h1>DxS VPN — это надёжность!</h1>
-    <button class="btn" data-action="next">Отлично!</button>
+    <h1>Максимальная надёжность</h1>
+    <button class="btn" data-action="next">Круто!</button>
   </div>
 
   <div class="slide" data-index="2">
     <div class="lottie-container">
-      <lottie-player src="./lowprice.json" background="transparent" speed="0.8" loop autoplay></lottie-player>
+      <lottie-player src="./lowprice.json" background="transparent" speed="0.9" loop autoplay></lottie-player>
     </div>
-    <h1>У нас самая выгодная цена на рынке!</h1>
-    <button class="btn" data-action="next">Прекрасно!</button>
+    <h1>Цена — огонь, качество — космос</h1>
+    <button class="btn" data-action="next">Беру!</button>
   </div>
 
   <div class="slide" data-index="3">
     <div class="lottie-container">
-      <lottie-player src="./france.json" background="transparent" speed="0.8" loop autoplay></lottie-player>
+      <lottie-player src="./france.json" background="transparent" speed="0.9" loop autoplay></lottie-player>
     </div>
-    <h1>Наш сервер располагается во Франции!</h1>
-    <button class="btn" data-action="next">Понял!</button>
+    <h1>Серверы во Франции — скорость + приватность</h1>
+    <button class="btn" data-action="next">Ясно!</button>
   </div>
 
   <div class="slide" data-index="4">
     <div class="lottie-container">
-      <lottie-player src="./welcome.json" background="transparent" speed="0.8" loop autoplay></lottie-player>
+      <lottie-player src="./welcome.json" background="transparent" speed="0.9" loop autoplay></lottie-player>
     </div>
-    <h1>Добро пожаловать!</h1>
-    <button class="btn" id="continueBtn">Продолжить</button>
+    <h1>Готов ворваться?</h1>
+    <button class="btn" id="continueBtn">Начать!</button>
   </div>
 
   <div class="progress">
@@ -175,37 +175,15 @@
 
   let current = 0;
   let touchStartX = 0;
-  let touchEndX = 0;
   let autoTimer = null;
-
-  // Улучшенная функция вибрации
-  function triggerHaptic() {
-    // 1. Telegram Web App (самый надёжный способ в Telegram Mini Apps)
-    if (window.Telegram?.WebApp?.HapticFeedback) {
-      window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
-      return;
-    }
-
-    // 2. Стандартная вибрация в браузере
-    if (navigator.vibrate) {
-      navigator.vibrate([30]);   // короткий импульс 30 мс
-      return;
-    }
-
-    // 3. Запасной вариант — ничего не делаем (или можно console.log)
-    // console.log('Haptic feedback not supported');
-  }
 
   function showSlide(index) {
     if (index < 0 || index > 4) return;
 
     slides.forEach((s, i) => {
       s.classList.remove('active', 'prev');
-      if (i === index) {
-        s.classList.add('active');
-      } else if (i === current) {
-        s.classList.add('prev');
-      }
+      if (i === index) s.classList.add('active');
+      else if (i === current) s.classList.add('prev');
     });
 
     dots.forEach((d, i) => d.classList.toggle('active', i === index));
@@ -213,60 +191,41 @@
     current = index;
 
     clearTimeout(autoTimer);
-    if (current < 4) {
-      autoTimer = setTimeout(() => showSlide(current + 1), 4200);
-    }
+    if (current < 4) autoTimer = setTimeout(() => showSlide(current + 1), 4500);
   }
 
   function nextSlide() {
-    if (current < 4) {
-      showSlide(current + 1);
-      triggerHaptic();
-    }
+    if (current < 4) showSlide(current + 1);
   }
 
-  // Свайпы
+  // Свайп
   slider.addEventListener('touchstart', e => {
     touchStartX = e.changedTouches[0].screenX;
   }, { passive: true });
 
   slider.addEventListener('touchend', e => {
-    touchEndX = e.changedTouches[0].screenX;
-    const diff = touchStartX - touchEndX;
-
-    if (Math.abs(diff) > 60) {
-      if (diff > 0 && current < 4) {
-        nextSlide();
-      } else if (diff < 0 && current > 0) {
-        showSlide(current - 1);
-        triggerHaptic();
-      }
+    const diff = touchStartX - e.changedTouches[0].screenX;
+    if (Math.abs(diff) > 70) {
+      if (diff > 0 && current < 4) nextSlide();
+      else if (diff < 0 && current > 0) showSlide(current - 1);
     }
   }, { passive: true });
 
-  // Кнопки "далее"
+  // Кнопки
   document.querySelectorAll('[data-action="next"]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      triggerHaptic();
-      nextSlide();
-    });
+    btn.addEventListener('click', nextSlide);
   });
 
-  // Кнопка "Продолжить"
   continueBtn.addEventListener('click', () => {
-    triggerHaptic();
     window.location.href = 'regorlog.html';
   });
 
-  // Старт
   showSlide(0);
 
-  // Telegram Web App инициализация
+  // Telegram init (если внутри Mini App)
   if (window.Telegram?.WebApp) {
     window.Telegram.WebApp.ready();
     window.Telegram.WebApp.expand();
-    // Можно включить кнопку "Закрыть" или другие настройки, если нужно
-    // window.Telegram.WebApp.MainButton.show();
   }
 </script>
 </body>

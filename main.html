@@ -51,9 +51,9 @@
       transform: translateX(-100%);
     }
     .lottie-container {
-      width: 240px;
-      height: 240px;
-      margin-bottom: 48px;
+      width: 220px;
+      height: 220px;
+      margin-bottom: 52px;
     }
     h1 {
       font-size: 26px;
@@ -62,7 +62,7 @@
       text-align: center;
       margin-bottom: 64px;
       line-height: 1.32;
-      padding: 0 12px;
+      padding: 0 16px;
     }
     .btn {
       min-width: 220px;
@@ -106,7 +106,7 @@
     }
 
     @media (min-width: 500px) {
-      .lottie-container { width: 280px; height: 280px; }
+      .lottie-container { width: 260px; height: 260px; }
       h1 { font-size: 30px; }
       .btn { min-width: 260px; padding: 18px 48px; font-size: 20px; }
     }
@@ -117,34 +117,34 @@
 <div class="slider" id="slider">
   <div class="slide" data-index="0">
     <div class="lottie-container">
-      <lottie-player src="./hello.json" background="transparent" speed="1" loop autoplay></lottie-player>
+      <lottie-player src="./telegram_handshake.json" background="transparent" speed="0.8" loop autoplay></lottie-player>
     </div>
     <h1>DxS VPN — это надёжность!</h1>
-    <button class="btn" data-action="next">Отлично</button>
+    <button class="btn" data-action="next">отлично!</button>
   </div>
 
   <div class="slide" data-index="1">
     <div class="lottie-container">
-      <lottie-player src="./lowprice.json" background="transparent" speed="1" loop autoplay></lottie-player>
+      <lottie-player src="./telegram_france_flag.json" background="transparent" speed="0.8" loop autoplay></lottie-player>
     </div>
     <h1>У нас самая выгодная цена на рынке!</h1>
-    <button class="btn" data-action="next">Прекрасно</button>
+    <button class="btn" data-action="next">прекрасно!</button>
   </div>
 
   <div class="slide" data-index="2">
     <div class="lottie-container">
-      <lottie-player src="./france.json" background="transparent" speed="1" loop autoplay></lottie-player>
+      <lottie-player src="./telegram_biceps.json" background="transparent" speed="0.8" loop autoplay></lottie-player>
     </div>
     <h1>Наш сервер располагается во Франции!</h1>
-    <button class="btn" data-action="next">Понял</button>
+    <button class="btn" data-action="next">понял!</button>
   </div>
 
   <div class="slide" data-index="3">
     <div class="lottie-container">
-      <lottie-player src="./welcome.json" background="transparent" speed="1" loop autoplay></lottie-player>
+      <lottie-player src="./telegram_checkmark.json" background="transparent" speed="0.8" loop autoplay></lottie-player>
     </div>
     <h1>Добро пожаловать!</h1>
-    <button class="btn" id="continueBtn">Продолжить</button>
+    <button class="btn" id="continueBtn">продолжить</button>
   </div>
 
   <div class="progress">
@@ -166,6 +166,22 @@
   let touchEndX = 0;
   let autoTimer = null;
 
+  function triggerHaptic() {
+    // Telegram Mini App haptic (если запущено в TG)
+    if (window.Telegram?.WebApp?.HapticFeedback) {
+      window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+      return;
+    }
+    
+    // Обычная вибрация в браузере (Safari на iPhone)
+    if (navigator.vibrate) {
+      navigator.vibrate(30);  // 30 мс — короткий импульс, работает на iOS 13+
+    } else {
+      // Fallback: ничего не делать или лёгкий CSS-эффект
+      console.log('Вибрация не поддерживается');
+    }
+  }
+
   function showSlide(index) {
     slides.forEach((s, i) => {
       s.classList.remove('active', 'prev');
@@ -184,7 +200,7 @@
   function nextSlide() {
     if (current < 3) {
       showSlide(current + 1);
-      if (navigator.vibrate) navigator.vibrate(36);
+      triggerHaptic();
     }
   }
 
@@ -196,28 +212,30 @@
     touchEndX = e.changedTouches[0].screenX;
     const diff = touchStartX - touchEndX;
     if (Math.abs(diff) > 50) {
-      if (diff > 0 && current < 3) nextSlide();
-      else if (diff < 0 && current > 0) {
+      if (diff > 0 && current < 3) {
+        nextSlide();
+      } else if (diff < 0 && current > 0) {
         showSlide(current - 1);
-        if (navigator.vibrate) navigator.vibrate(36);
+        triggerHaptic();
       }
     }
   }, { passive: true });
 
   document.querySelectorAll('[data-action="next"]').forEach(btn => {
     btn.addEventListener('click', () => {
-      if (navigator.vibrate) navigator.vibrate(36);
+      triggerHaptic();
       nextSlide();
     });
   });
 
   continueBtn.addEventListener('click', () => {
-    if (navigator.vibrate) navigator.vibrate(50);
+    triggerHaptic();
     window.location.href = 'regorlog.html';
   });
 
   showSlide(0);
 
+  // Telegram инициализация (если в TG — расширяем и готовим)
   if (window.Telegram?.WebApp) {
     window.Telegram.WebApp.ready();
     window.Telegram.WebApp.expand();

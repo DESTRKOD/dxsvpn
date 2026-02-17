@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>DxS VPN</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Google Sans', system-ui, -apple-system, sans-serif;
+      font-weight: 400;
+      background: #f8f9fc;
+      color: #000000;
+      height: 100vh;
+      overflow: hidden;
+      touch-action: manipulation;
+    }
+    .slider {
+      width: 100%;
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+    .slide {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 16px;
+      transition: transform 0.48s cubic-bezier(0.32, 0.72, 0, 1);
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    .slide.active {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    .slide.prev {
+      transform: translateX(-100%);
+    }
+    .lottie-container {
+      width: 240px;
+      height: 240px;
+      margin-bottom: 48px;
+    }
+    h1 {
+      font-size: 26px;
+      font-weight: 500;
+      color: #000000;
+      text-align: center;
+      margin-bottom: 64px;
+      line-height: 1.32;
+      padding: 0 12px;
+    }
+    .btn {
+      min-width: 220px;
+      max-width: 320px;
+      padding: 16px 36px;
+      font-size: 19px;
+      font-weight: 500;
+      color: white;
+      background: linear-gradient(145deg, #1a73e8, #0d65d6);
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(26, 115, 232, 0.25);
+      cursor: pointer;
+      transition: all 0.18s ease;
+      user-select: none;
+      touch-action: manipulation;
+    }
+    .btn:active {
+      transform: scale(0.96) translateY(2px);
+      box-shadow: 0 4px 12px rgba(26, 115, 232, 0.35);
+      background: linear-gradient(145deg, #0d65d6, #1a73e8);
+    }
+    .progress {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+    }
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #d0d7e0;
+      transition: all 0.3s ease;
+    }
+    .dot.active {
+      background: #1a73e8;
+      transform: scale(1.4);
+    }
+
+    @media (min-width: 500px) {
+      .lottie-container { width: 280px; height: 280px; }
+      h1 { font-size: 30px; }
+      .btn { min-width: 260px; padding: 18px 48px; font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="slider" id="slider">
+  <div class="slide" data-index="0">
+    <div class="lottie-container">
+      <lottie-player src="./hello.json" background="transparent" speed="1" loop autoplay></lottie-player>
+    </div>
+    <h1>DxS VPN — это надёжность!</h1>
+    <button class="btn" data-action="next">отлично!</button>
+  </div>
+
+  <div class="slide" data-index="1">
+    <div class="lottie-container">
+      <lottie-player src="./lowprice.json" background="transparent" speed="1" loop autoplay></lottie-player>
+    </div>
+    <h1>У нас самая выгодная цена на рынке!</h1>
+    <button class="btn" data-action="next">прекрасно!</button>
+  </div>
+
+  <div class="slide" data-index="2">
+    <div class="lottie-container">
+      <lottie-player src="./france.json" background="transparent" speed="1" loop autoplay></lottie-player>
+    </div>
+    <h1>Наш сервер располагается во Франции!</h1>
+    <button class="btn" data-action="next">понял!</button>
+  </div>
+
+  <div class="slide" data-index="3">
+    <div class="lottie-container">
+      <lottie-player src="./welcome.json" background="transparent" speed="1" loop autoplay></lottie-player>
+    </div>
+    <h1>Добро пожаловать!</h1>
+    <button class="btn" id="continueBtn">продолжить</button>
+  </div>
+
+  <div class="progress">
+    <div class="dot active"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+</div>
+
+<script>
+  const slider = document.getElementById('slider');
+  const slides = document.querySelectorAll('.slide');
+  const dots = document.querySelectorAll('.dot');
+  const continueBtn = document.getElementById('continueBtn');
+
+  let current = 0;
+  let touchStartX = 0;
+  let touchEndX = 0;
+  let autoTimer = null;
+
+  function showSlide(index) {
+    slides.forEach((s, i) => {
+      s.classList.remove('active', 'prev');
+      if (i === index) s.classList.add('active');
+      else if (i === current) s.classList.add('prev');
+    });
+
+    dots.forEach((d, i) => d.classList.toggle('active', i === index));
+
+    current = index;
+
+    clearTimeout(autoTimer);
+    if (current < 3) autoTimer = setTimeout(nextSlide, 4000);
+  }
+
+  function nextSlide() {
+    if (current < 3) {
+      showSlide(current + 1);
+      if (navigator.vibrate) navigator.vibrate(36);
+    }
+  }
+
+  slider.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
+
+  slider.addEventListener('touchend', e => {
+    touchEndX = e.changedTouches[0].screenX;
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0 && current < 3) nextSlide();
+      else if (diff < 0 && current > 0) {
+        showSlide(current - 1);
+        if (navigator.vibrate) navigator.vibrate(36);
+      }
+    }
+  }, { passive: true });
+
+  document.querySelectorAll('[data-action="next"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (navigator.vibrate) navigator.vibrate(36);
+      nextSlide();
+    });
+  });
+
+  continueBtn.addEventListener('click', () => {
+    if (navigator.vibrate) navigator.vibrate(50);
+    window.location.href = 'regorlog.html';
+  });
+
+  showSlide(0);
+
+  if (window.Telegram?.WebApp) {
+    window.Telegram.WebApp.ready();
+    window.Telegram.WebApp.expand();
+  }
+</script>
+</body>
+</html>

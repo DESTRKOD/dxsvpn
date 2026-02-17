@@ -108,40 +108,40 @@
     <div class="lottie-container">
       <lottie-player src="./hello.json" background="transparent" speed="0.9" loop autoplay></lottie-player>
     </div>
-    <h1>Привет! Это DxS VPN</h1>
-    <button class="btn" data-action="next">Поехали!</button>
+    <h1>Добро пожаловать в DxS VPN</h1>
+    <button class="btn" data-action="next">Продолжить</button>
   </div>
 
   <div class="slide" data-index="1">
     <div class="lottie-container">
       <lottie-player src="./hello.json" background="transparent" speed="0.9" loop autoplay></lottie-player>
     </div>
-    <h1>Максимальная надёжность</h1>
-    <button class="btn" data-action="next">Круто!</button>
+    <h1>Высокий уровень надёжности и безопасности</h1>
+    <button class="btn" data-action="next">Продолжить</button>
   </div>
 
   <div class="slide" data-index="2">
     <div class="lottie-container">
       <lottie-player src="./lowprice.json" background="transparent" speed="0.9" loop autoplay></lottie-player>
     </div>
-    <h1>Цена — огонь, качество — космос</h1>
-    <button class="btn" data-action="next">Беру!</button>
+    <h1>Одна из самых выгодных цен на рынке</h1>
+    <button class="btn" data-action="next">Продолжить</button>
   </div>
 
   <div class="slide" data-index="3">
     <div class="lottie-container">
       <lottie-player src="./france.json" background="transparent" speed="0.9" loop autoplay></lottie-player>
     </div>
-    <h1>Серверы во Франции — скорость + приватность</h1>
-    <button class="btn" data-action="next">Ясно!</button>
+    <h1>Серверы расположены во Франции</h1>
+    <button class="btn" data-action="next">Продолжить</button>
   </div>
 
   <div class="slide" data-index="4">
     <div class="lottie-container">
       <lottie-player src="./welcome.json" background="transparent" speed="0.9" loop autoplay></lottie-player>
     </div>
-    <h1>Готов ворваться?</h1>
-    <button class="btn" id="continueBtn">Начать!</button>
+    <h1>Готовы начать использование?</h1>
+    <button class="btn" id="continueBtn">Начать работу</button>
   </div>
 
   <div class="progress">
@@ -163,27 +163,24 @@
   let touchStartX = 0;
   let autoTimer = null;
 
-  // Универсальная функция отдачи (вибрация + визуал)
+  // Универсальная функция тактильной отдачи
   function triggerFeedback(style = 'light') {
-    // 1. Telegram Mini App — приоритетный и самый надёжный способ
+    // 1. Telegram Mini App (iOS + Android)
     if (window.Telegram?.WebApp?.HapticFeedback) {
       try {
         window.Telegram.WebApp.HapticFeedback.impactOccurred(style);
-        return; // если сработало — выходим
+        return;
       } catch (e) {
         console.warn('Telegram Haptic failed:', e);
       }
     }
 
-    // 2. Fallback для Android (и других платформ, где navigator.vibrate работает)
+    // 2. Fallback для Android-браузеров
     if (navigator.vibrate) {
-      // Простые паттерны в зависимости от стиля
       if (style === 'heavy') navigator.vibrate(60);
       else if (style === 'medium') navigator.vibrate(35);
-      else navigator.vibrate(25); // light по умолчанию
+      else navigator.vibrate(25);
     }
-
-    // На iOS вне Telegram вибрации не будет — но визуальная анимация кнопки остаётся
   }
 
   function showSlide(index) {
@@ -200,7 +197,7 @@
     current = index;
 
     clearTimeout(autoTimer);
-    if (current < 4) autoTimer = setTimeout(() => showSlide(current + 1), 4500);
+    if (current < 4) autoTimer = setTimeout(() => showSlide(current + 1), 5000);
   }
 
   function nextSlide() {
@@ -227,7 +224,7 @@
     }
   }, { passive: true });
 
-  // Кнопки "далее"
+  // Кнопки
   document.querySelectorAll('[data-action="next"]').forEach(btn => {
     btn.addEventListener('click', () => {
       triggerFeedback('medium');
@@ -235,19 +232,15 @@
     });
   });
 
-  // Финальная кнопка — сильнее отдача
   continueBtn.addEventListener('click', () => {
     triggerFeedback('heavy');
-    // Даём haptic время отработать
     setTimeout(() => {
       window.location.href = 'regorlog.html';
     }, 180);
   });
 
-  // Старт
   showSlide(0);
 
-  // Telegram WebApp init (если внутри Mini App)
   if (window.Telegram?.WebApp) {
     window.Telegram.WebApp.ready();
     window.Telegram.WebApp.expand();

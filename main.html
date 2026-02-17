@@ -33,8 +33,8 @@
       justify-content: center;
       padding: 24px 20px;
       opacity: 0;
-      transform: scale(0.94) translateY(20px);
-      transition: all 0.62s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform: scale(0.92) translateY(30px);
+      transition: all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       pointer-events: none;
     }
     .slide.active {
@@ -69,30 +69,14 @@
       cursor: pointer;
       transition: all 0.26s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
+    .btn:hover {
+      transform: scale(1.03) translateY(-2px);
+      box-shadow: 0 14px 36px rgba(66,133,244,0.45);
+    }
     .btn:active {
       transform: scale(0.92) translateY(4px);
       box-shadow: 0 6px 16px rgba(25,103,210,0.55);
       background: linear-gradient(145deg, #1967d2, #4285f4);
-    }
-    .progress {
-      position: absolute;
-      bottom: 40px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 14px;
-    }
-    .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: rgba(66,133,244,0.3);
-      transition: all 0.5s ease;
-    }
-    .dot.active {
-      background: #4285f4;
-      transform: scale(1.8);
-      box-shadow: 0 0 0 6px rgba(66,133,244,0.25);
     }
     @media (min-width: 500px) {
       .lottie-container { width: 280px; height: 280px; }
@@ -111,7 +95,6 @@
     <h1>Добро пожаловать в DxS VPN</h1>
     <button class="btn" data-action="next">Продолжить</button>
   </div>
-
   <div class="slide" data-index="1">
     <div class="lottie-container">
       <lottie-player src="./hello.json" background="transparent" speed="0.9" loop autoplay></lottie-player>
@@ -119,7 +102,6 @@
     <h1>Высокий уровень надёжности и безопасности</h1>
     <button class="btn" data-action="next">Продолжить</button>
   </div>
-
   <div class="slide" data-index="2">
     <div class="lottie-container">
       <lottie-player src="./lowprice.json" background="transparent" speed="0.9" loop autoplay></lottie-player>
@@ -127,7 +109,6 @@
     <h1>Одна из самых выгодных цен на рынке</h1>
     <button class="btn" data-action="next">Продолжить</button>
   </div>
-
   <div class="slide" data-index="3">
     <div class="lottie-container">
       <lottie-player src="./france.json" background="transparent" speed="0.9" loop autoplay></lottie-player>
@@ -135,7 +116,6 @@
     <h1>Серверы расположены во Франции</h1>
     <button class="btn" data-action="next">Продолжить</button>
   </div>
-
   <div class="slide" data-index="4">
     <div class="lottie-container">
       <lottie-player src="./welcome.json" background="transparent" speed="0.9" loop autoplay></lottie-player>
@@ -143,59 +123,50 @@
     <h1>Готовы начать использование?</h1>
     <button class="btn" id="continueBtn">Начать работу</button>
   </div>
-
-  <div class="progress">
-    <div class="dot active"></div>
-    <div class="dot"></div>
-    <div class="dot"></div>
-    <div class="dot"></div>
-    <div class="dot"></div>
-  </div>
 </div>
 
 <script>
   const slider = document.getElementById('slider');
   const slides = document.querySelectorAll('.slide');
-  const dots = document.querySelectorAll('.dot');
   const continueBtn = document.getElementById('continueBtn');
-
   let current = 0;
   let touchStartX = 0;
   let autoTimer = null;
 
-  // Универсальная функция тактильной отдачи
   function triggerFeedback(style = 'light') {
-    // 1. Telegram Mini App (iOS + Android)
+    let intensity;
+    switch(style) {
+      case 'heavy': intensity = 60; break;
+      case 'medium': intensity = 35; break;
+      default: intensity = 25;
+    }
+
     if (window.Telegram?.WebApp?.HapticFeedback) {
       try {
         window.Telegram.WebApp.HapticFeedback.impactOccurred(style);
+        console.log(`Telegram Haptic: ${style}`);
         return;
       } catch (e) {
         console.warn('Telegram Haptic failed:', e);
       }
     }
 
-    // 2. Fallback для Android-браузеров
     if (navigator.vibrate) {
-      if (style === 'heavy') navigator.vibrate(60);
-      else if (style === 'medium') navigator.vibrate(35);
-      else navigator.vibrate(25);
+      navigator.vibrate(intensity);
+      console.log(`navigator.vibrate(${intensity}) вызван`);
+    } else {
+      console.log('Вибрация не поддерживается устройством / браузером');
     }
   }
 
   function showSlide(index) {
     if (index < 0 || index > 4) return;
-
     slides.forEach((s, i) => {
       s.classList.remove('active', 'prev');
       if (i === index) s.classList.add('active');
       else if (i === current) s.classList.add('prev');
     });
-
-    dots.forEach((d, i) => d.classList.toggle('active', i === index));
-
     current = index;
-
     clearTimeout(autoTimer);
     if (current < 4) autoTimer = setTimeout(() => showSlide(current + 1), 5000);
   }
@@ -207,7 +178,6 @@
     }
   }
 
-  // Свайпы
   slider.addEventListener('touchstart', e => {
     touchStartX = e.changedTouches[0].screenX;
   }, { passive: true });
@@ -224,7 +194,6 @@
     }
   }, { passive: true });
 
-  // Кнопки
   document.querySelectorAll('[data-action="next"]').forEach(btn => {
     btn.addEventListener('click', () => {
       triggerFeedback('medium');

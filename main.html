@@ -104,7 +104,6 @@
       background: #1a73e8;
       transform: scale(1.4);
     }
-
     @media (min-width: 500px) {
       .lottie-container { width: 260px; height: 260px; }
       h1 { font-size: 30px; }
@@ -115,40 +114,54 @@
 <body>
 
 <div class="slider" id="slider">
+  <!-- Новый первый слайд -->
   <div class="slide" data-index="0">
     <div class="lottie-container">
-      <lottie-player src="./telegram_handshake.json" background="transparent" speed="0.8" loop autoplay></lottie-player>
+      <lottie-player src="./hello.json" background="transparent" speed="0.8" loop autoplay></lottie-player>
     </div>
-    <h1>DxS VPN — это надёжность!</h1>
-    <button class="btn" data-action="next">отлично!</button>
+    <h1>Приветствуем вас в DxS VPN!</h1>
+    <button class="btn" data-action="next">Привет</button>
   </div>
 
+  <!-- Старый слайд 1 → теперь 1 -->
   <div class="slide" data-index="1">
     <div class="lottie-container">
-      <lottie-player src="./telegram_france_flag.json" background="transparent" speed="0.8" loop autoplay></lottie-player>
+      <lottie-player src="./hello.json" background="transparent" speed="0.8" loop autoplay></lottie-player>
     </div>
-    <h1>У нас самая выгодная цена на рынке!</h1>
-    <button class="btn" data-action="next">прекрасно!</button>
+    <h1>DxS VPN — это надёжность!</h1>
+    <button class="btn" data-action="next">Отлично!</button>
   </div>
 
+  <!-- Старый слайд 2 → теперь 2 -->
   <div class="slide" data-index="2">
     <div class="lottie-container">
-      <lottie-player src="./telegram_biceps.json" background="transparent" speed="0.8" loop autoplay></lottie-player>
+      <lottie-player src="./lowprice.json" background="transparent" speed="0.8" loop autoplay></lottie-player>
     </div>
-    <h1>Наш сервер располагается во Франции!</h1>
-    <button class="btn" data-action="next">понял!</button>
+    <h1>У нас самая выгодная цена на рынке!</h1>
+    <button class="btn" data-action="next">Прекрасно!</button>
   </div>
 
+  <!-- Старый слайд 3 → теперь 3 -->
   <div class="slide" data-index="3">
     <div class="lottie-container">
-      <lottie-player src="./telegram_checkmark.json" background="transparent" speed="0.8" loop autoplay></lottie-player>
+      <lottie-player src="./france.json" background="transparent" speed="0.8" loop autoplay></lottie-player>
+    </div>
+    <h1>Наш сервер располагается во Франции!</h1>
+    <button class="btn" data-action="next">Понял!</button>
+  </div>
+
+  <!-- Старый слайд 4 → теперь 4 -->
+  <div class="slide" data-index="4">
+    <div class="lottie-container">
+      <lottie-player src="./welcome.json" background="transparent" speed="0.8" loop autoplay></lottie-player>
     </div>
     <h1>Добро пожаловать!</h1>
-    <button class="btn" id="continueBtn">продолжить</button>
+    <button class="btn" id="continueBtn">Продолжить</button>
   </div>
 
   <div class="progress">
     <div class="dot active"></div>
+    <div class="dot"></div>
     <div class="dot"></div>
     <div class="dot"></div>
     <div class="dot"></div>
@@ -167,17 +180,13 @@
   let autoTimer = null;
 
   function triggerHaptic() {
-    // Telegram Mini App haptic (если запущено в TG)
     if (window.Telegram?.WebApp?.HapticFeedback) {
       window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
       return;
     }
-    
-    // Обычная вибрация в браузере (Safari на iPhone)
     if (navigator.vibrate) {
-      navigator.vibrate(30);  // 30 мс — короткий импульс, работает на iOS 13+
+      navigator.vibrate(30);
     } else {
-      // Fallback: ничего не делать или лёгкий CSS-эффект
       console.log('Вибрация не поддерживается');
     }
   }
@@ -194,11 +203,11 @@
     current = index;
 
     clearTimeout(autoTimer);
-    if (current < 3) autoTimer = setTimeout(nextSlide, 4000);
+    if (current < 4) autoTimer = setTimeout(nextSlide, 4000);
   }
 
   function nextSlide() {
-    if (current < 3) {
+    if (current < 4) {
       showSlide(current + 1);
       triggerHaptic();
     }
@@ -212,7 +221,7 @@
     touchEndX = e.changedTouches[0].screenX;
     const diff = touchStartX - touchEndX;
     if (Math.abs(diff) > 50) {
-      if (diff > 0 && current < 3) {
+      if (diff > 0 && current < 4) {
         nextSlide();
       } else if (diff < 0 && current > 0) {
         showSlide(current - 1);
@@ -235,7 +244,6 @@
 
   showSlide(0);
 
-  // Telegram инициализация (если в TG — расширяем и готовим)
   if (window.Telegram?.WebApp) {
     window.Telegram.WebApp.ready();
     window.Telegram.WebApp.expand();

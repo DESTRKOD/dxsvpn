@@ -76,8 +76,8 @@
       .btn { min-width: 260px; padding: 17px 50px; font-size: 19px; }
     }
     @media (max-width: 360px) {
-      h1 { font-size: 24px; }
-      .btn { padding: 14px 32px; font-size: 16px; }
+      h1 { font-size: 24px; margin-bottom: 40px; }
+      .btn { min-width: 200px; padding: 14px 32px; font-size: 17px; }
     }
   </style>
 </head>
@@ -163,9 +163,8 @@
   slider.addEventListener('touchend', e => {
     const diff = touchStartX - e.changedTouches[0].screenX;
     if (Math.abs(diff) > 70) {
-      if (diff > 0 && current < 4) {
-        nextSlide();
-      } else if (diff < 0 && current > 0) {
+      if (diff > 0 && current < 4) nextSlide();
+      else if (diff < 0 && current > 0) {
         showSlide(current - 1);
         triggerFeedback('light');
       }

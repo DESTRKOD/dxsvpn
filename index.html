@@ -4,47 +4,50 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>DxS VPN</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      height: 100vh;
-      background: linear-gradient(135deg, #f0f4ff 0%, #e6ecff 100%);
-      font-family: system-ui, -apple-system, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #0f1a3a;
-    }
-    .loader {
-      font-size: 22px;
-      font-weight: 500;
-      text-align: center;
-      animation: pulse 1.8s infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 0.6; }
-      50% { opacity: 1; }
-    }
-  </style>
 </head>
-<body>
-
-<div class="loader">Загрузка...</div>
-
+<body style="margin:0; padding:0; background:linear-gradient(135deg, #f0f4ff 0%, #e6ecff 100%);">
 <script>
   (function() {
-    const isAuth = localStorage.getItem('dxs_vpn_authenticated') === 'true';
-
+    if (!window.Telegram?.WebApp) {
+      window.location.replace('first.html');
+      return;
+    }
+    
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
+    
+    const userId = tg.initDataUnsafe.user?.id;
+    
+    if (!userId) {
+      window.location.replace('first.html');
+      return;
+    }
+    
+    function handleBotResponse(event) {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.action === 'user_check_result') {
+          if (data.exists) {
+            window.location.replace('main.html');
+          } else {
+            window.location.replace('first.html');
+          }
+        }
+      } catch (e) {}
+    }
+    
+    window.addEventListener('message', handleBotResponse);
+    
+    tg.sendData(JSON.stringify({
+      action: 'check_user',
+      user_id: userId
+    }));
+    
     setTimeout(() => {
-      if (isAuth) {
-        window.location.replace('main.html');
-      } else {
-        window.location.replace('first.html');
-      }
-    }, 300);
+      window.location.replace('first.html');
+    }, 3000);
   })();
 </script>
-
 </body>
 </html>

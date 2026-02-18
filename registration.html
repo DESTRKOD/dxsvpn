@@ -44,6 +44,57 @@
       max-width: 380px;
       margin-bottom: 16px;
     }
+    .phone-row {
+      display: flex;
+      gap: 0;
+      align-items: stretch;
+      border: 2px solid #d2e0ff;
+      border-radius: 14px;
+      overflow: hidden;
+      background: white;
+    }
+    .phone-row:focus-within {
+      border-color: #4285f4;
+      box-shadow: 0 0 0 3px rgba(66,133,244,0.12);
+    }
+    .country-select-wrapper {
+      position: relative;
+      flex: 0 0 92px;
+      border-right: 1px solid #d2e0ff;
+    }
+    .country-select {
+      appearance: none;
+      border: none;
+      border-radius: 0;
+      padding: 14px 28px 14px 12px;
+      font-size: 17px;
+      background: transparent;
+      cursor: pointer;
+      height: 100%;
+      width: 100%;
+    }
+    .flag {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 20px;
+      pointer-events: none;
+    }
+    .number-input {
+      flex: 1;
+      border: none;
+      border-radius: 0;
+      font-size: 17px;
+      padding: 14px 16px;
+      outline: none;
+      height: 100%;
+    }
+    input[type="tel"]::-webkit-outer-spin-button,
+    input[type="tel"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
     input, select {
       width: 100%;
       padding: 14px 16px;
@@ -57,37 +108,6 @@
     input:focus, select:focus {
       border-color: #4285f4;
       box-shadow: 0 0 0 3px rgba(66,133,244,0.12);
-    }
-    .phone-row {
-      display: flex;
-      gap: 10px;
-      align-items: stretch;
-    }
-    .country-select-wrapper {
-      position: relative;
-      flex: 0 0 100px;
-    }
-    .country-select {
-      padding-left: 38px;
-      font-size: 17px;
-      cursor: pointer;
-    }
-    .flag {
-      position: absolute;
-      left: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 20px;
-      pointer-events: none;
-    }
-    .number-input {
-      flex: 1;
-      font-size: 17px;
-    }
-    input[type="tel"]::-webkit-outer-spin-button,
-    input[type="tel"]::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
     }
     .btn {
       width: 100%;
@@ -124,15 +144,12 @@
       .lottie-container { width: 220px; height: 220px; margin-bottom: 32px; }
       h1 { font-size: 28px; }
       .btn { padding: 17px; font-size: 19px; }
-      input, select { font-size: 18px; padding: 15px 18px; }
       .country-select-wrapper { flex: 0 0 110px; }
-      .phone-row { gap: 12px; }
     }
     @media (max-width: 360px) {
-      .phone-row { gap: 8px; }
-      .country-select-wrapper { flex: 0 0 90px; }
-      .country-select { padding-left: 34px; font-size: 16px; }
-      .flag { left: 8px; font-size: 18px; }
+      .country-select-wrapper { flex: 0 0 88px; }
+      .country-select { padding-right: 24px; font-size: 16px; }
+      .flag { right: 6px; font-size: 18px; }
     }
   </style>
 </head>
@@ -141,13 +158,7 @@
 <div class="container">
   <div id="formBlock">
     <div class="lottie-container">
-      <lottie-player 
-        src="./registration.json" 
-        background="transparent" 
-        speed="0.9" 
-        loop 
-        autoplay>
-      </lottie-player>
+      <lottie-player src="./registration.json" background="transparent" speed="0.9" loop autoplay></lottie-player>
     </div>
 
     <h1>Регистрация</h1>
@@ -159,7 +170,6 @@
     <div class="input-group">
       <div class="phone-row">
         <div class="country-select-wrapper">
-          <span class="flag" id="selectedFlag">🇷🇺</span>
           <select class="country-select" id="countryCode">
             <option value="+7" data-flag="🇷🇺" selected>+7</option>
             <option value="+1" data-flag="🇺🇸">+1</option>
@@ -175,8 +185,8 @@
             <option value="+994" data-flag="🇦🇿">+994</option>
             <option value="+374" data-flag="🇦🇲">+374</option>
             <option value="+373" data-flag="🇲🇩">+373</option>
-            <!-- Добавь больше кодов, если нужно -->
           </select>
+          <span class="flag" id="selectedFlag">🇷🇺</span>
         </div>
         <input type="tel" id="phoneNumber" class="number-input" placeholder="9991234567" inputmode="numeric" pattern="[0-9]*" autocomplete="tel-national" />
       </div>
@@ -197,13 +207,7 @@
 
   <div id="successBlock" style="display: none;">
     <div class="lottie-container">
-      <lottie-player 
-        src="./welcome.json" 
-        background="transparent" 
-        speed="0.9" 
-        loop 
-        autoplay>
-      </lottie-player>
+      <lottie-player src="./welcome.json" background="transparent" speed="0.9" loop autoplay></lottie-player>
     </div>
     <h1>Готово!</h1>
     <div class="message success visible">Регистрация успешна</div>
@@ -301,23 +305,16 @@
     if (window.Telegram?.WebApp) {
       window.Telegram.WebApp.sendData(JSON.stringify(payload));
       triggerFeedback('heavy');
-
-      setTimeout(() => {
-        formBlock.style.display = 'none';
-        successBlock.style.display = 'flex';
-      }, 700);
-    } else {
-      showStatus('Приложение должно быть открыто через бота Telegram', true);
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Продолжить';
     }
+
+    // Показываем успех независимо от Telegram.WebApp
+    setTimeout(() => {
+      formBlock.style.display = 'none';
+      successBlock.style.display = 'flex';
+    }, 700);
   }
 
   submitBtn.addEventListener('click', handleSubmit);
-
-  nameInput.addEventListener('keypress', e => {
-    if (e.key === 'Enter') handleSubmit();
-  });
 
   goToLoginBtn.addEventListener('click', () => {
     triggerFeedback('light');
@@ -330,7 +327,7 @@
     const tg = window.Telegram.WebApp;
     tg.ready();
     tg.expand();
-    tg.MainButton.setText('ПРОДОЛЖИТЬ');
+    tg.MainButton.setText('ЗАРЕГИСТРИРОВАТЬСЯ');
     tg.MainButton.show();
     tg.MainButton.onClick(handleSubmit);
   }

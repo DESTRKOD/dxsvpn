@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>DxS VPN</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #f0f4ff 0%, #e6ecff 100%);
+      font-family: system-ui, -apple-system, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #0f1a3a;
+    }
+    .loader {
+      font-size: 22px;
+      font-weight: 500;
+      text-align: center;
+      animation: pulse 1.8s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="loader">Загрузка...</div>
+
+<script>
+  (function() {
+    const isAuth = localStorage.getItem('dxs_vpn_authenticated') === 'true';
+
+    setTimeout(() => {
+      if (isAuth) {
+        window.location.replace('main.html');
+      } else {
+        window.location.replace('first.html');
+      }
+    }, 300);
+  })();
+</script>
+
+</body>
+</html>

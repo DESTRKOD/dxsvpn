@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>DxS VPN — Регистрация</title>
+  <title>DxS VPN</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -18,101 +18,46 @@
       overflow: hidden;
       touch-action: manipulation;
     }
-    .container {
+    .slider {
+      width: 100%;
       height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+    .slide {
+      position: absolute;
+      inset: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       padding: 16px 16px 24px;
+      opacity: 0;
+      transform: scale(0.92) translateY(30px);
+      transition: all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      pointer-events: none;
+    }
+    .slide.active {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      pointer-events: auto;
     }
     .lottie-container {
       width: 200px;
       height: 200px;
-      margin-bottom: 24px;
-      filter: drop-shadow(0 8px 24px rgba(26,115,232,0.24));
+      margin-bottom: 32px;
+      filter: drop-shadow(0 8px 24px rgba(26,115,232,0.28));
     }
     h1 {
       font-size: 26px;
       font-weight: 600;
       text-align: center;
-      margin-bottom: 28px;
-      line-height: 1.3;
-    }
-    .input-group {
-      width: 100%;
-      max-width: 380px;
-      margin-bottom: 16px;
-    }
-    .phone-row {
-      display: flex;
-      gap: 0;
-      align-items: stretch;
-      border: 2px solid #d2e0ff;
-      border-radius: 14px;
-      overflow: hidden;
-      background: white;
-    }
-    .phone-row:focus-within {
-      border-color: #4285f4;
-      box-shadow: 0 0 0 3px rgba(66,133,244,0.12);
-    }
-    .country-select-wrapper {
-      position: relative;
-      flex: 0 0 92px;
-      border-right: 1px solid #d2e0ff;
-    }
-    .country-select {
-      appearance: none;
-      border: none;
-      border-radius: 0;
-      padding: 14px 28px 14px 12px;
-      font-size: 17px;
-      background: transparent;
-      cursor: pointer;
-      height: 100%;
-      width: 100%;
-    }
-    .flag {
-      position: absolute;
-      right: 8px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 20px;
-      pointer-events: none;
-    }
-    .number-input {
-      flex: 1;
-      border: none;
-      border-radius: 0;
-      font-size: 17px;
-      padding: 14px 16px;
-      outline: none;
-      height: 100%;
-    }
-    input[type="tel"]::-webkit-outer-spin-button,
-    input[type="tel"]::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-    input, select {
-      width: 100%;
-      padding: 14px 16px;
-      font-size: 17px;
-      border: 2px solid #d2e0ff;
-      border-radius: 14px;
-      background: white;
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    input:focus, select:focus {
-      border-color: #4285f4;
-      box-shadow: 0 0 0 3px rgba(66,133,244,0.12);
+      margin-bottom: 48px;
+      line-height: 1.28;
     }
     .btn {
-      width: 100%;
-      max-width: 380px;
-      padding: 16px;
+      min-width: 220px;
+      padding: 16px 40px;
       font-size: 18px;
       font-weight: 600;
       color: white;
@@ -122,131 +67,67 @@
       box-shadow: 0 8px 24px rgba(66,133,244,0.3);
       cursor: pointer;
       transition: all 0.24s;
-      margin-top: 8px;
     }
     .btn:hover { transform: translateY(-1px); box-shadow: 0 12px 32px rgba(66,133,244,0.4); }
-    .btn:active  { transform: scale(0.98); }
-    .btn:disabled { opacity: 0.55; transform: none; box-shadow: none; cursor: not-allowed; }
-    .message {
-      font-size: 15px;
-      text-align: center;
-      margin-top: 16px;
-      line-height: 1.4;
-      opacity: 0;
-      transition: opacity 0.3s;
-      white-space: pre-line;
-    }
-    .message.visible { opacity: 1; }
-    .message.success { color: #188038; }
-    .message.error { color: #d93025; }
-    #successBlock { display: none; flex-direction: column; align-items: center; justify-content: center; height: 100%; }
+    .btn:active { transform: scale(0.98); }
     @media (min-width: 420px) {
-      .lottie-container { width: 220px; height: 220px; margin-bottom: 32px; }
+      .lottie-container { width: 240px; height: 240px; margin-bottom: 48px; }
       h1 { font-size: 28px; }
-      .btn { padding: 17px; font-size: 19px; }
-      .country-select-wrapper { flex: 0 0 110px; }
+      .btn { min-width: 260px; padding: 17px 50px; font-size: 19px; }
     }
     @media (max-width: 360px) {
-      .country-select-wrapper { flex: 0 0 88px; }
-      .country-select { padding-right: 24px; font-size: 16px; }
-      .flag { right: 6px; font-size: 18px; }
+      h1 { font-size: 24px; margin-bottom: 40px; }
+      .btn { min-width: 200px; padding: 14px 32px; font-size: 17px; }
     }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <div id="formBlock">
+<div class="slider" id="slider">
+  <div class="slide" data-index="0">
     <div class="lottie-container">
-      <lottie-player src="./registration.json" background="transparent" speed="0.9" loop autoplay></lottie-player>
+      <lottie-player src="./hello.json" background="transparent" speed="0.9" loop autoplay></lottie-player>
     </div>
-
-    <h1>Регистрация</h1>
-
-    <div class="input-group">
-      <input type="text" id="name" placeholder="Имя" autocomplete="name" />
-    </div>
-
-    <div class="input-group">
-      <div class="phone-row">
-        <div class="country-select-wrapper">
-          <select class="country-select" id="countryCode">
-            <option value="+7" data-flag="🇷🇺" selected>+7</option>
-            <option value="+1" data-flag="🇺🇸">+1</option>
-            <option value="+44" data-flag="🇬🇧">+44</option>
-            <option value="+49" data-flag="🇩🇪">+49</option>
-            <option value="+33" data-flag="🇫🇷">+33</option>
-            <option value="+375" data-flag="🇧🇾">+375</option>
-            <option value="+380" data-flag="🇺🇦">+380</option>
-            <option value="+371" data-flag="🇱🇻">+371</option>
-            <option value="+370" data-flag="🇱🇹">+370</option>
-            <option value="+372" data-flag="🇪🇪">+372</option>
-            <option value="+995" data-flag="🇬🇪">+995</option>
-            <option value="+994" data-flag="🇦🇿">+994</option>
-            <option value="+374" data-flag="🇦🇲">+374</option>
-            <option value="+373" data-flag="🇲🇩">+373</option>
-          </select>
-          <span class="flag" id="selectedFlag">🇷🇺</span>
-        </div>
-        <input type="tel" id="phoneNumber" class="number-input" placeholder="9991234567" inputmode="numeric" pattern="[0-9]*" autocomplete="tel-national" />
-      </div>
-    </div>
-
-    <div class="input-group">
-      <input type="password" id="password" placeholder="Пароль" autocomplete="new-password" />
-    </div>
-
-    <div class="input-group">
-      <input type="password" id="passwordConfirm" placeholder="Повторите пароль" autocomplete="new-password" />
-    </div>
-
-    <button class="btn" id="submitBtn">Продолжить</button>
-
-    <div class="message" id="statusMsg"></div>
+    <h1>Добро пожаловать в DxS VPN</h1>
+    <button class="btn" data-action="next">Продолжить</button>
   </div>
-
-  <div id="successBlock" style="display: none;">
+  <div class="slide" data-index="1">
+    <div class="lottie-container">
+      <lottie-player src="./security.json" background="transparent" speed="0.9" loop autoplay></lottie-player>
+    </div>
+    <h1>Высокий уровень надёжности и безопасности</h1>
+    <button class="btn" data-action="next">Продолжить</button>
+  </div>
+  <div class="slide" data-index="2">
+    <div class="lottie-container">
+      <lottie-player src="./lowprice.json" background="transparent" speed="0.9" loop autoplay></lottie-player>
+    </div>
+    <h1>Одна из самых выгодных цен на рынке</h1>
+    <button class="btn" data-action="next">Продолжить</button>
+  </div>
+  <div class="slide" data-index="3">
+    <div class="lottie-container">
+      <lottie-player src="./france.json" background="transparent" speed="0.9" loop autoplay></lottie-player>
+    </div>
+    <h1>Сервера расположены во Франции</h1>
+    <button class="btn" data-action="next">Продолжить</button>
+  </div>
+  <div class="slide" data-index="4">
     <div class="lottie-container">
       <lottie-player src="./welcome.json" background="transparent" speed="0.9" loop autoplay></lottie-player>
     </div>
-    <h1>Готово!</h1>
-    <div class="message success visible">Регистрация успешна</div>
-    <button class="btn" id="goToLoginBtn" style="margin-top: 28px;">Войти</button>
+    <h1>Готовы начать использование?</h1>
+    <button class="btn" id="continueBtn">Начать работу</button>
   </div>
 </div>
 
 <script>
-  const nameInput = document.getElementById('name');
-  const countrySelect = document.getElementById('countryCode');
-  const selectedFlag = document.getElementById('selectedFlag');
-  const phoneNumber = document.getElementById('phoneNumber');
-  const passwordInput = document.getElementById('password');
-  const passwordConfirm = document.getElementById('passwordConfirm');
-  const submitBtn = document.getElementById('submitBtn');
-  const statusMsg = document.getElementById('statusMsg');
-  const formBlock = document.getElementById('formBlock');
-  const successBlock = document.getElementById('successBlock');
-  const goToLoginBtn = document.getElementById('goToLoginBtn');
-
-  countrySelect.addEventListener('change', () => {
-    const selectedOption = countrySelect.options[countrySelect.selectedIndex];
-    selectedFlag.textContent = selectedOption.dataset.flag || '🌍';
-  });
-
-  phoneNumber.addEventListener('input', e => {
-    e.target.value = e.target.value.replace(/\D/g, '');
-  });
-
-  function showStatus(text, isError = false) {
-    statusMsg.textContent = text;
-    statusMsg.style.color = isError ? '#d93025' : '#0f1a3a';
-    statusMsg.classList.add('visible');
-  }
-
-  function hideStatus() {
-    statusMsg.classList.remove('visible');
-    statusMsg.textContent = '';
-  }
+  const slider = document.getElementById('slider');
+  const slides = document.querySelectorAll('.slide');
+  const continueBtn = document.getElementById('continueBtn');
+  let current = 0;
+  let touchStartX = 0;
+  let autoTimer = null;
 
   function triggerFeedback(style = 'light') {
     if (window.Telegram?.WebApp?.HapticFeedback) {
@@ -256,83 +137,60 @@
     }
   }
 
-  function getFullPhone() {
-    return countrySelect.value + phoneNumber.value.trim();
+  function showSlide(index) {
+    if (index < 0 || index > 4) return;
+    slides.forEach((s, i) => {
+      s.classList.remove('active', 'prev');
+      if (i === index) s.classList.add('active');
+      else if (i === current) s.classList.add('prev');
+    });
+    current = index;
+    clearTimeout(autoTimer);
+    if (current < 4) autoTimer = setTimeout(() => showSlide(current + 1), 5000);
   }
 
-  function handleSubmit() {
-    const name = nameInput.value.trim();
-    const numPart = phoneNumber.value.trim();
-    const fullPhone = getFullPhone();
-    const password = passwordInput.value.trim();
-    const confirm = passwordConfirm.value.trim();
-
-    if (name.length < 2) {
-      showStatus('Введите имя (минимум 2 символа)', true);
-      triggerFeedback('medium');
-      return;
+  function nextSlide() {
+    if (current < 4) {
+      showSlide(current + 1);
+      triggerFeedback('light');
     }
-
-    if (numPart.length < 9) {
-      showStatus('Номер слишком короткий', true);
-      triggerFeedback('medium');
-      return;
-    }
-
-    if (password.length < 6) {
-      showStatus('Пароль минимум 6 символов', true);
-      triggerFeedback('medium');
-      return;
-    }
-
-    if (password !== confirm) {
-      showStatus('Пароли не совпадают', true);
-      triggerFeedback('medium');
-      return;
-    }
-
-    hideStatus();
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Отправка...';
-
-    const payload = {
-      action: 'register',
-      name: name,
-      phone: fullPhone,
-      password: password
-    };
-
-    if (window.Telegram?.WebApp) {
-      window.Telegram.WebApp.sendData(JSON.stringify(payload));
-      triggerFeedback('heavy');
-    }
-
-    // Показываем успех независимо от Telegram.WebApp
-    setTimeout(() => {
-      formBlock.style.display = 'none';
-      successBlock.style.display = 'flex';
-    }, 700);
   }
 
-  submitBtn.addEventListener('click', handleSubmit);
+  slider.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
 
-  goToLoginBtn.addEventListener('click', () => {
-    triggerFeedback('light');
+  slider.addEventListener('touchend', e => {
+    const diff = touchStartX - e.changedTouches[0].screenX;
+    if (Math.abs(diff) > 70) {
+      if (diff > 0 && current < 4) nextSlide();
+      else if (diff < 0 && current > 0) {
+        showSlide(current - 1);
+        triggerFeedback('light');
+      }
+    }
+  }, { passive: true });
+
+  document.querySelectorAll('[data-action="next"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      triggerFeedback('medium');
+      nextSlide();
+    });
+  });
+
+  continueBtn.addEventListener('click', () => {
+    triggerFeedback('heavy');
     setTimeout(() => {
       window.location.href = 'regorlog.html';
     }, 180);
   });
 
-  if (window.Telegram?.WebApp) {
-    const tg = window.Telegram.WebApp;
-    tg.ready();
-    tg.expand();
-    tg.MainButton.setText('ЗАРЕГИСТРИРОВАТЬСЯ');
-    tg.MainButton.show();
-    tg.MainButton.onClick(handleSubmit);
-  }
+  showSlide(0);
 
-  nameInput.focus();
+  if (window.Telegram?.WebApp) {
+    window.Telegram.WebApp.ready();
+    window.Telegram.WebApp.expand();
+  }
 </script>
 </body>
 </html>

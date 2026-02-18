@@ -24,95 +24,120 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 24px 20px;
-      animation: slideUp 0.72s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-      opacity: 0;
-    }
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(140px); }
-      to   { opacity: 1; transform: translateY(0); }
+      padding: 16px 16px 24px;
     }
     .lottie-container {
-      width: 240px;
-      height: 240px;
-      margin-bottom: 40px;
-      filter: drop-shadow(0 12px 32px rgba(26,115,232,0.28));
+      width: 200px;
+      height: 200px;
+      margin-bottom: 24px;
+      filter: drop-shadow(0 8px 24px rgba(26,115,232,0.24));
     }
     h1 {
-      font-size: 28px;
+      font-size: 26px;
       font-weight: 600;
       text-align: center;
-      margin-bottom: 32px;
+      margin-bottom: 28px;
       line-height: 1.3;
-      color: #0f1a3a;
     }
     .input-group {
       width: 100%;
-      max-width: 360px;
-      margin-bottom: 20px;
+      max-width: 380px;
+      margin-bottom: 16px;
     }
-    input {
+    input, select {
       width: 100%;
-      padding: 16px 20px;
-      font-size: 18px;
+      padding: 14px 16px;
+      font-size: 17px;
       border: 2px solid #d2e0ff;
-      border-radius: 16px;
+      border-radius: 14px;
       background: white;
       outline: none;
-      transition: all 0.25s;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    input:focus {
+    input:focus, select:focus {
       border-color: #4285f4;
-      box-shadow: 0 0 0 4px rgba(66,133,244,0.15);
+      box-shadow: 0 0 0 3px rgba(66,133,244,0.12);
+    }
+    .phone-row {
+      display: flex;
+      gap: 10px;
+      align-items: stretch;
+    }
+    .country-select-wrapper {
+      position: relative;
+      flex: 0 0 100px;
+    }
+    .country-select {
+      padding-left: 38px;
+      font-size: 17px;
+      cursor: pointer;
+    }
+    .flag {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 20px;
+      pointer-events: none;
+    }
+    .number-input {
+      flex: 1;
+      font-size: 17px;
+    }
+    input[type="tel"]::-webkit-outer-spin-button,
+    input[type="tel"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
     }
     .btn {
       width: 100%;
-      max-width: 360px;
-      padding: 18px;
-      font-size: 20px;
+      max-width: 380px;
+      padding: 16px;
+      font-size: 18px;
       font-weight: 600;
       color: white;
       background: linear-gradient(145deg, #4285f4, #1967d2);
       border: none;
-      border-radius: 16px;
-      box-shadow: 0 10px 28px rgba(66,133,244,0.35);
+      border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(66,133,244,0.3);
       cursor: pointer;
-      transition: all 0.26s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transition: all 0.24s;
     }
-    .btn:hover { transform: scale(1.03) translateY(-2px); box-shadow: 0 14px 36px rgba(66,133,244,0.45); }
-    .btn:active  { transform: scale(0.96); }
-    .btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-      box-shadow: none;
-    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 12px 32px rgba(66,133,244,0.4); }
+    .btn:active  { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.55; transform: none; box-shadow: none; cursor: not-allowed; }
     .link {
-      margin-top: 24px;
-      font-size: 16px;
+      margin-top: 20px;
+      font-size: 15px;
       color: #4285f4;
-      text-decoration: none;
       font-weight: 500;
       cursor: pointer;
     }
     .link:hover { text-decoration: underline; }
     .message {
-      color: #0f1a3a;
-      font-size: 16px;
+      font-size: 15px;
       text-align: center;
       margin-top: 16px;
       line-height: 1.4;
       opacity: 0;
-      transition: opacity 0.4s;
+      transition: opacity 0.3s;
       white-space: pre-line;
     }
     .message.visible { opacity: 1; }
     .message.error { color: #d93025; }
-    @media (min-width: 500px) {
-      .lottie-container { width: 280px; height: 280px; }
-      h1 { font-size: 34px; }
-      .btn { padding: 20px; font-size: 22px; }
-      input { font-size: 20px; padding: 18px 24px; }
+    @media (min-width: 420px) {
+      .lottie-container { width: 220px; height: 220px; margin-bottom: 32px; }
+      h1 { font-size: 28px; }
+      .btn { padding: 17px; font-size: 19px; }
+      input, select { font-size: 18px; padding: 15px 18px; }
+      .country-select-wrapper { flex: 0 0 110px; }
+      .phone-row { gap: 12px; }
+    }
+    @media (max-width: 360px) {
+      .phone-row { gap: 8px; }
+      .country-select-wrapper { flex: 0 0 90px; }
+      .country-select { padding-left: 34px; font-size: 16px; }
+      .flag { left: 8px; font-size: 18px; }
     }
   </style>
 </head>
@@ -132,7 +157,29 @@
   <h1>Вход в DxS VPN</h1>
 
   <div class="input-group">
-    <input type="tel" id="phone" placeholder="Номер телефона (например 79991234567)" autocomplete="tel" inputmode="numeric" />
+    <div class="phone-row">
+      <div class="country-select-wrapper">
+        <span class="flag" id="selectedFlag">🇷🇺</span>
+        <select class="country-select" id="countryCode">
+          <option value="+7" data-flag="🇷🇺" selected>+7</option>
+          <option value="+1" data-flag="🇺🇸">+1</option>
+          <option value="+44" data-flag="🇬🇧">+44</option>
+          <option value="+49" data-flag="🇩🇪">+49</option>
+          <option value="+33" data-flag="🇫🇷">+33</option>
+          <option value="+375" data-flag="🇧🇾">+375</option>
+          <option value="+380" data-flag="🇺🇦">+380</option>
+          <option value="+371" data-flag="🇱🇻">+371</option>
+          <option value="+370" data-flag="🇱🇹">+370</option>
+          <option value="+372" data-flag="🇪🇪">+372</option>
+          <option value="+995" data-flag="🇬🇪">+995</option>
+          <option value="+994" data-flag="🇦🇿">+994</option>
+          <option value="+374" data-flag="🇦🇲">+374</option>
+          <option value="+373" data-flag="🇲🇩">+373</option>
+          <!-- Добавь больше кодов, если нужно -->
+        </select>
+      </div>
+      <input type="tel" id="phoneNumber" class="number-input" placeholder="9991234567" inputmode="numeric" pattern="[0-9]*" autocomplete="tel-national" />
+    </div>
   </div>
 
   <div class="input-group" id="passwordGroup" style="display:none;">
@@ -147,23 +194,34 @@
 </div>
 
 <script>
-  const phoneInput    = document.getElementById('phone');
+  const countrySelect = document.getElementById('countryCode');
+  const selectedFlag = document.getElementById('selectedFlag');
+  const phoneNumber = document.getElementById('phoneNumber');
   const passwordInput = document.getElementById('password');
   const passwordGroup = document.getElementById('passwordGroup');
-  const submitBtn     = document.getElementById('submitBtn');
-  const toRegister    = document.getElementById('toRegister');
-  const statusMsg     = document.getElementById('statusMsg');
+  const submitBtn = document.getElementById('submitBtn');
+  const toRegister = document.getElementById('toRegister');
+  const statusMsg = document.getElementById('statusMsg');
 
-  let step = 'phone'; // 'phone' → 'password'
+  let step = 'phone';
+
+  countrySelect.addEventListener('change', () => {
+    const selectedOption = countrySelect.options[countrySelect.selectedIndex];
+    selectedFlag.textContent = selectedOption.dataset.flag || '🌍';
+  });
+
+  phoneNumber.addEventListener('input', e => {
+    e.target.value = e.target.value.replace(/\D/g, '');
+  });
 
   function showStatus(text, isError = false) {
     statusMsg.textContent = text;
-    statusMsg.classList.toggle('error', isError);
+    statusMsg.style.color = isError ? '#d93025' : '#0f1a3a';
     statusMsg.classList.add('visible');
   }
 
   function hideStatus() {
-    statusMsg.classList.remove('visible', 'error');
+    statusMsg.classList.remove('visible');
     statusMsg.textContent = '';
   }
 
@@ -175,17 +233,17 @@
     }
   }
 
-  function validatePhone(phone) {
-    const cleaned = phone.replace(/\D/g, '');
-    return cleaned.length >= 10 && cleaned.length <= 12;
+  function getFullPhone() {
+    return countrySelect.value + phoneNumber.value.trim();
   }
 
   function handleSubmit() {
+    const fullPhone = getFullPhone();
+    const numPart = phoneNumber.value.trim();
+
     if (step === 'phone') {
-      const phone = phoneInput.value.trim().replace(/\D/g, '');
-      
-      if (!validatePhone(phone)) {
-        showStatus('Введите корректный номер телефона (10–12 цифр)', true);
+      if (numPart.length < 9) {
+        showStatus('Номер слишком короткий', true);
         triggerFeedback('medium');
         return;
       }
@@ -196,7 +254,7 @@
 
       const payload = {
         action: 'request_login',
-        phone: phone
+        phone: fullPhone
       };
 
       if (window.Telegram?.WebApp) {
@@ -206,20 +264,19 @@
         setTimeout(() => {
           showStatus('Введите пароль');
           passwordGroup.style.display = 'block';
-          phoneInput.disabled = true;
+          phoneNumber.disabled = true;
+          countrySelect.disabled = true;
           submitBtn.textContent = 'Войти';
           submitBtn.disabled = false;
           step = 'password';
           passwordInput.focus();
         }, 600);
       } else {
-        showStatus('Откройте через Telegram-бота', true);
+        showStatus('Приложение должно быть открыто через бота Telegram', true);
         submitBtn.disabled = false;
         submitBtn.textContent = 'Продолжить';
       }
-    }
-    else if (step === 'password') {
-      const phone = phoneInput.value.trim().replace(/\D/g, '');
+    } else if (step = 'password') {
       const password = passwordInput.value.trim();
 
       if (!password) {
@@ -228,12 +285,13 @@
         return;
       }
 
+      hideStatus();
       submitBtn.disabled = true;
       submitBtn.textContent = 'Вход...';
 
       const payload = {
         action: 'submit_login',
-        phone: phone,
+        phone: fullPhone,
         password: password
       };
 
@@ -248,7 +306,7 @@
           }, 1200);
         }, 800);
       } else {
-        showStatus('Ошибка — откройте через бота', true);
+        showStatus('Приложение должно быть открыто через бота Telegram', true);
         submitBtn.disabled = false;
         submitBtn.textContent = 'Войти';
       }
@@ -257,7 +315,7 @@
 
   submitBtn.addEventListener('click', handleSubmit);
 
-  phoneInput.addEventListener('keypress', e => {
+  phoneNumber.addEventListener('keypress', e => {
     if (e.key === 'Enter') handleSubmit();
   });
 
@@ -281,7 +339,7 @@
     tg.MainButton.onClick(handleSubmit);
   }
 
-  phoneInput.focus();
+  phoneNumber.focus();
 </script>
 </body>
 </html>

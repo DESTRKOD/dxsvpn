@@ -127,7 +127,7 @@
 
 <div class="actions">
   <button class="btn" id="replenishBtn">Пополнить</button>
-  <button class="btn" id="buyBtn">Купить</button>
+  <button class="btn" id="replenishBtn2">Пополнить</button>
 </div>
 
 <footer>
@@ -136,7 +136,7 @@
 
 <script>
   const replenishBtn = document.getElementById('replenishBtn');
-  const buyBtn = document.getElementById('buyBtn');
+  const replenishBtn2 = document.getElementById('replenishBtn2');
   
   function triggerFeedback(style = 'light') {
     if (window.Telegram?.WebApp?.HapticFeedback) {
@@ -149,9 +149,9 @@
     alert('Функция пополнения в разработке');
   });
   
-  buyBtn.addEventListener('click', () => {
+  replenishBtn2.addEventListener('click', () => {
     triggerFeedback('medium');
-    alert('Функция покупки в разработке');
+    alert('Функция пополнения в разработке');
   });
   
   if (window.Telegram?.WebApp) {

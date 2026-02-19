@@ -99,9 +99,9 @@
       display: flex;
       flex-direction: row;
       gap: 4px;
-      max-width: 360px;
+      max-width: 400px;
       width: 100%;
-      margin: 0 auto 24px;
+      margin: 0 auto 0;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.5);
     }
@@ -140,6 +140,13 @@
       padding-top: 32px;
     }
     
+    .content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    
     @media (max-width: 360px) {
       .actions {
         gap: 8px;
@@ -169,21 +176,23 @@
   <h1>DxS VPN</h1>
 </header>
 
-<!-- Навигационный островок -->
-<div class="nav-island">
-  <button class="nav-item" id="navTariffs">Тарифы</button>
-  <button class="nav-item active" id="navMain">Главная</button>
-  <button class="nav-item" id="navProfile">Профиль</button>
-</div>
+<div class="content">
+  <div class="balance-card">
+    <div class="balance-label">Ваш баланс</div>
+    <div class="balance-value">0<sup>₽</sup></div>
+  </div>
 
-<div class="balance-card">
-  <div class="balance-label">Ваш баланс</div>
-  <div class="balance-value">0<sup>₽</sup></div>
-</div>
+  <div class="actions">
+    <button class="btn" id="replenishBtn">Пополнить</button>
+    <button class="btn" id="historyBtn">История</button>
+  </div>
 
-<div class="actions">
-  <button class="btn" id="replenishBtn">Пополнить</button>
-  <button class="btn" id="historyBtn">История</button>
+  <!-- Навигационный островок под кнопками -->
+  <div class="nav-island">
+    <button class="nav-item" id="navTariffs">Тарифы</button>
+    <button class="nav-item active" id="navMain">Главная</button>
+    <button class="nav-item" id="navProfile">Профиль</button>
+  </div>
 </div>
 
 <footer>

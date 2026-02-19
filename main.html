@@ -226,25 +226,20 @@
     alert('История операций в разработке');
   });
   
-  // Навигационные обработчики
+  // Навигационные обработчики с реальными переходами
   navTariffs.addEventListener('click', () => {
     triggerFeedback('light');
-    setActiveNav(navTariffs);
-    alert('Переход на страницу тарифов (в разработке)');
-    // window.location.href = 'tariffs.html';
+    window.location.href = 'vpn.html';
   });
   
   navMain.addEventListener('click', () => {
     triggerFeedback('light');
-    setActiveNav(navMain);
     // Уже на главной, ничего не делаем
   });
   
   navProfile.addEventListener('click', () => {
     triggerFeedback('light');
-    setActiveNav(navProfile);
-    alert('Переход в профиль (в разработке)');
-    // window.location.href = 'profile.html';
+    window.location.href = 'profile.html';
   });
   
   if (window.Telegram?.WebApp) {

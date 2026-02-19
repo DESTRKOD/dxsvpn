@@ -114,6 +114,29 @@
       border-color: #4285f4;
       box-shadow: 0 0 0 3px rgba(66,133,244,0.12);
     }
+    .otp-container {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 24px 0;
+      max-width: 380px;
+    }
+    .otp-input {
+      width: 48px;
+      height: 56px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: 600;
+      border: 2px solid #d2e0ff;
+      border-radius: 12px;
+      background: white;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .otp-input:focus {
+      border-color: #4285f4;
+      box-shadow: 0 0 0 3px rgba(66,133,244,0.12);
+    }
     .btn { 
       width: 100%; 
       max-width: 380px; 
@@ -178,7 +201,8 @@
       .country-select-wrapper { flex: 0 0 80px; }
       .country-select { padding: 0 28px 0 8px; font-size: 15px; }
       .flag { right: 6px; font-size: 16px; }
-      .number-input, .input-field { padding: 12px; font-size: 15px; }
+      .number-input, .input-field, .otp-input { padding: 12px; font-size: 15px; }
+      .otp-input { width: 42px; height: 50px; font-size: 22px; }
     }
   </style>
 </head>
@@ -244,9 +268,33 @@
     <div class="message success visible">Регистрация успешна</div>
     <button class="btn" id="goToLoginBtn" style="margin-top:28px;">Войти</button>
   </div>
+
+  <!-- Блок ввода кода (6 отдельных полей) -->
+  <div id="verifyBlock" style="display:none;">
+    <div class="lottie-container">
+      <lottie-player src="./registration.json" background="transparent" speed="0.9" loop autoplay></lottie-player>
+    </div>
+    <h1>Подтверждение</h1>
+    <p style="text-align:center; color:#5f6c8a; margin:16px 0;">Введите 6-значный код из Telegram</p>
+    
+    <div class="otp-container">
+      <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" id="otp1" autofocus>
+      <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" id="otp2">
+      <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" id="otp3">
+      <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" id="otp4">
+      <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" id="otp5">
+      <input type="text" class="otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" id="otp6">
+    </div>
+
+    <button class="btn" id="verifyBtn">Подтвердить</button>
+    <div class="message error" id="verifyError"></div>
+  </div>
 </div>
 
 <script>
+  const API_URL = 'https://vpnbackend.onrender.com';
+
+  // Элементы
   const nameInput = document.getElementById('name');
   const countrySelect = document.getElementById('countryCode');
   const selectedFlag = document.getElementById('selectedFlag');
@@ -261,15 +309,49 @@
   const waitingPhone = document.getElementById('waitingPhone');
   const checkStatusBtn = document.getElementById('checkStatusBtn');
   const goToLoginBtn = document.getElementById('goToLoginBtn');
+  const verifyBlock = document.getElementById('verifyBlock');
+  const verifyBtn = document.getElementById('verifyBtn');
+  const verifyError = document.getElementById('verifyError');
 
+  // OTP поля
+  const otpInputs = [
+    document.getElementById('otp1'),
+    document.getElementById('otp2'),
+    document.getElementById('otp3'),
+    document.getElementById('otp4'),
+    document.getElementById('otp5'),
+    document.getElementById('otp6')
+  ];
+
+  let currentToken = null;
   let currentPhone = '';
 
+  // Флаг страны
   countrySelect.addEventListener('change', () => {
     const opt = countrySelect.options[countrySelect.selectedIndex];
     selectedFlag.textContent = opt.dataset.flag || '🌍';
   });
 
+  // Только цифры в телефоне
   phoneNumber.addEventListener('input', e => e.target.value = e.target.value.replace(/\D/g, ''));
+
+  // Переход между OTP полями
+  otpInputs.forEach((input, index) => {
+    input.addEventListener('input', e => {
+      if (e.target.value.length === 1 && index < 5) {
+        otpInputs[index + 1].focus();
+      }
+    });
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
+        otpInputs[index - 1].focus();
+      }
+    });
+  });
+
+  function getOtpCode() {
+    return otpInputs.map(i => i.value).join('');
+  }
 
   function showStatus(text, isError = false) {
     statusMsg.textContent = text;
@@ -282,60 +364,12 @@
     statusMsg.textContent = '';
   }
 
-  function triggerFeedback(style = 'light') {
-    if (window.Telegram?.WebApp?.HapticFeedback) {
-      try { window.Telegram.WebApp.HapticFeedback.impactOccurred(style); } catch {}
-    }
-  }
-
   function getFullPhone() {
     return countrySelect.value + phoneNumber.value.trim();
   }
 
-  function handleBotResponse(event) {
-    try {
-      const data = JSON.parse(event.data);
-      
-      if (data.action === 'registration_initiated') {
-        formBlock.style.display = 'none';
-        waitingBlock.style.display = 'flex';
-        waitingPhone.textContent = `Номер: ${currentPhone}`;
-      }
-      
-      else if (data.action === 'registration_confirmed') {
-        waitingBlock.style.display = 'none';
-        successBlock.style.display = 'flex';
-      }
-      
-      else if (data.action === 'registration_status') {
-        if (data.confirmed) {
-          waitingBlock.style.display = 'none';
-          successBlock.style.display = 'flex';
-        } else {
-          showStatus('Ожидаем подтверждения в боте', false);
-          setTimeout(() => hideStatus(), 2000);
-        }
-      }
-      
-      else if (data.action === 'registration_error') {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Зарегистрироваться';
-        formBlock.style.display = 'block';
-        waitingBlock.style.display = 'none';
-        showStatus(data.message || 'Ошибка регистрации', true);
-      }
-      
-      else if (data.action === 'server_error') {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Зарегистрироваться';
-        showStatus('Ошибка сервера. Повторите позже', true);
-      }
-    } catch (e) {}
-  }
-
-  window.addEventListener('message', handleBotResponse);
-
-  function handleSubmit() {
+  // Регистрация — шаг 1
+  submitBtn.addEventListener('click', async () => {
     const name = nameInput.value.trim();
     const numPart = phoneNumber.value.trim();
     const pass = passwordInput.value.trim();
@@ -351,43 +385,100 @@
     submitBtn.disabled = true;
     submitBtn.textContent = 'Отправка...';
 
-    if (window.Telegram?.WebApp) {
-      window.Telegram.WebApp.sendData(JSON.stringify({
-        action: 'register',
-        name: name,
-        phone: currentPhone,
-        password: pass
-      }));
-      triggerFeedback('heavy');
+    try {
+      const res = await fetch(`${API_URL}/api/register/start`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          first_name: name,
+          phone: currentPhone,
+          password: pass,
+          password_confirm: confirm
+        })
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        formBlock.style.display = 'none';
+        waitingBlock.style.display = 'flex';
+        waitingPhone.textContent = `Номер: ${currentPhone}`;
+      } else {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Зарегистрироваться';
+        showStatus(data.error || 'Ошибка регистрации', true);
+      }
+    } catch {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Зарегистрироваться';
+      showStatus('Ошибка соединения', true);
     }
-  }
-
-  function checkStatus() {
-    if (window.Telegram?.WebApp && currentPhone) {
-      window.Telegram.WebApp.sendData(JSON.stringify({
-        action: 'check_registration',
-        phone: currentPhone
-      }));
-      triggerFeedback('light');
-      showStatus('Проверяем статус...', false);
-    }
-  }
-
-  submitBtn.addEventListener('click', handleSubmit);
-  checkStatusBtn.addEventListener('click', checkStatus);
-
-  goToLoginBtn.addEventListener('click', () => {
-    triggerFeedback('heavy');
-    setTimeout(() => window.location.href = 'regorlog.html', 150);
   });
 
-  if (window.Telegram?.WebApp) {
-    const tg = window.Telegram.WebApp;
-    tg.ready();
-    tg.expand();
-  }
+  // Проверка статуса
+  checkStatusBtn.addEventListener('click', async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/register/check`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: currentPhone })
+      });
+      const data = await res.json();
 
-  nameInput.focus();
+      if (data.confirmed) {
+        waitingBlock.style.display = 'none';
+        successBlock.style.display = 'flex';
+      } else {
+        showStatus('Ожидаем подтверждения в боте...', false);
+      }
+    } catch {
+      showStatus('Ошибка проверки', true);
+    }
+  });
+
+  // Переход на вход
+  goToLoginBtn.addEventListener('click', () => {
+    window.location.href = 'regorlog.html';
+  });
+
+  // Верификация кода
+  verifyBtn.addEventListener('click', async () => {
+    const code = getOtpCode();
+    if (code.length !== 6) {
+      verifyError.textContent = 'Введите все 6 цифр';
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_URL}/api/register/verify`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: currentToken || 'fallback', code })
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        localStorage.setItem('accessToken', data.accessToken);
+        localStorage.setItem('refreshToken', data.refreshToken);
+        verifyError.textContent = '';
+        verifyBlock.style.display = 'none';
+        successBlock.style.display = 'flex';
+      } else {
+        verifyError.textContent = data.error || 'Неверный код';
+      }
+    } catch {
+      verifyError.textContent = 'Ошибка соединения';
+    }
+  });
+
+  window.onload = () => {
+    const params = new URLSearchParams(window.location.search);
+    currentToken = params.get('token');
+    if (currentToken && params.get('stage') === 'verify') {
+      formBlock.style.display = 'none';
+      verifyBlock.style.display = 'block';
+    }
+    nameInput.focus();
+  };
 </script>
 </body>
 </html>

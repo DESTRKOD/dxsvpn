@@ -66,7 +66,7 @@
       flex-direction: row;
       gap: 12px;
       max-width: 400px;
-      margin: 0 auto;
+      margin: 0 auto 24px;
       width: 100%;
     }
     .btn {
@@ -88,6 +88,50 @@
       transform: scale(0.96);
       opacity: 0.9;
     }
+    
+    /* Навигационный островок */
+    .nav-island {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 40px;
+      padding: 6px;
+      display: flex;
+      flex-direction: row;
+      gap: 4px;
+      max-width: 360px;
+      width: 100%;
+      margin: 0 auto 24px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+    
+    .nav-item {
+      flex: 1;
+      padding: 12px 0;
+      font-size: clamp(15px, 4vw, 16px);
+      font-weight: 500;
+      color: #5f6c8a;
+      background: transparent;
+      border: none;
+      border-radius: 34px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    .nav-item.active {
+      background: white;
+      color: #4285f4;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(66,133,244,0.2);
+    }
+    
+    .nav-item:active {
+      opacity: 0.7;
+    }
+    
     footer {
       margin-top: auto;
       text-align: center;
@@ -95,12 +139,17 @@
       font-size: clamp(12px, 3vw, 14px);
       padding-top: 32px;
     }
+    
     @media (max-width: 360px) {
       .actions {
         gap: 8px;
       }
       .btn {
         padding: 14px 0;
+      }
+      .nav-item {
+        padding: 10px 0;
+        font-size: 14px;
       }
     }
   </style>
@@ -120,6 +169,13 @@
   <h1>DxS VPN</h1>
 </header>
 
+<!-- Навигационный островок -->
+<div class="nav-island">
+  <button class="nav-item" id="navTariffs">Тарифы</button>
+  <button class="nav-item active" id="navMain">Главная</button>
+  <button class="nav-item" id="navProfile">Профиль</button>
+</div>
+
 <div class="balance-card">
   <div class="balance-label">Ваш баланс</div>
   <div class="balance-value">0<sup>₽</sup></div>
@@ -138,10 +194,22 @@
   const replenishBtn = document.getElementById('replenishBtn');
   const historyBtn = document.getElementById('historyBtn');
   
+  // Навигация
+  const navTariffs = document.getElementById('navTariffs');
+  const navMain = document.getElementById('navMain');
+  const navProfile = document.getElementById('navProfile');
+  
   function triggerFeedback(style = 'light') {
     if (window.Telegram?.WebApp?.HapticFeedback) {
       try { window.Telegram.WebApp.HapticFeedback.impactOccurred(style); } catch {}
     }
+  }
+  
+  function setActiveNav(activeItem) {
+    [navTariffs, navMain, navProfile].forEach(item => {
+      item.classList.remove('active');
+    });
+    activeItem.classList.add('active');
   }
   
   replenishBtn.addEventListener('click', () => {
@@ -152,6 +220,27 @@
   historyBtn.addEventListener('click', () => {
     triggerFeedback('medium');
     alert('История операций в разработке');
+  });
+  
+  // Навигационные обработчики
+  navTariffs.addEventListener('click', () => {
+    triggerFeedback('light');
+    setActiveNav(navTariffs);
+    alert('Переход на страницу тарифов (в разработке)');
+    // window.location.href = 'tariffs.html';
+  });
+  
+  navMain.addEventListener('click', () => {
+    triggerFeedback('light');
+    setActiveNav(navMain);
+    // Уже на главной, ничего не делаем
+  });
+  
+  navProfile.addEventListener('click', () => {
+    triggerFeedback('light');
+    setActiveNav(navProfile);
+    alert('Переход в профиль (в разработке)');
+    // window.location.href = 'profile.html';
   });
   
   if (window.Telegram?.WebApp) {

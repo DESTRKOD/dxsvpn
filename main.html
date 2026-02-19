@@ -15,32 +15,32 @@
       background: linear-gradient(135deg, #f0f4ff 0%, #e6ecff 100%);
       color: #0f1a3a;
       min-height: 100vh;
-      padding: 20px 16px;
+      padding: 12px 16px;
       display: flex;
       flex-direction: column;
       -webkit-tap-highlight-color: transparent;
     }
     header {
       text-align: center;
-      margin-bottom: clamp(24px, 5vh, 40px);
+      margin-bottom: 8px;
     }
     .logo-lottie {
-      width: min(120px, 30vw);
-      height: min(120px, 30vw);
-      margin: 0 auto clamp(12px, 2vh, 16px);
+      width: min(100px, 25vw);
+      height: min(100px, 25vw);
+      margin: 0 auto 4px;
     }
     h1 {
-      font-size: clamp(24px, 6vw, 28px);
+      font-size: clamp(22px, 5vw, 26px);
       font-weight: 600;
-      margin-bottom: 4px;
+      margin-bottom: 0;
     }
     .balance-card {
       background: white;
       border-radius: 20px;
-      padding: clamp(20px, 4vh, 28px) 16px;
+      padding: 20px 16px;
       box-shadow: 0 12px 32px rgba(66,133,244,0.18);
       text-align: center;
-      margin-bottom: clamp(24px, 5vh, 40px);
+      margin-bottom: 16px;
       width: 100%;
       max-width: 400px;
       margin-left: auto;
@@ -49,16 +49,16 @@
     .balance-label {
       font-size: clamp(14px, 3.5vw, 16px);
       color: #5f6c8a;
-      margin-bottom: 8px;
-    }
-    .balance-value {
-      font-size: clamp(36px, 8vw, 42px);
-      font-weight: 700;
-      color: #0f1a3a;
       margin-bottom: 4px;
     }
+    .balance-value {
+      font-size: clamp(32px, 7vw, 38px);
+      font-weight: 700;
+      color: #0f1a3a;
+      margin-bottom: 0;
+    }
     .balance-value sup {
-      font-size: clamp(20px, 4vw, 24px);
+      font-size: clamp(18px, 3.5vw, 22px);
       vertical-align: super;
     }
     .actions {
@@ -66,13 +66,13 @@
       flex-direction: row;
       gap: 12px;
       max-width: 400px;
-      margin: 0 auto 24px;
+      margin: 0 auto 16px;
       width: 100%;
     }
     .btn {
       flex: 1;
-      padding: 16px 0;
-      font-size: clamp(16px, 4vw, 18px);
+      padding: 14px 0;
+      font-size: clamp(15px, 4vw, 17px);
       font-weight: 600;
       color: white;
       background: linear-gradient(145deg, #4285f4, #1967d2);
@@ -108,8 +108,8 @@
     
     .nav-item {
       flex: 1;
-      padding: 12px 0;
-      font-size: clamp(15px, 4vw, 16px);
+      padding: 10px 0;
+      font-size: clamp(14px, 3.5vw, 15px);
       font-weight: 500;
       color: #5f6c8a;
       background: transparent;
@@ -136,28 +136,23 @@
       margin-top: auto;
       text-align: center;
       color: #8a94ad;
-      font-size: clamp(12px, 3vw, 14px);
-      padding-top: 32px;
+      font-size: clamp(12px, 3vw, 13px);
+      padding-top: 20px;
     }
     
     .content {
       flex: 1;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
     }
     
     @media (max-width: 360px) {
-      .actions {
-        gap: 8px;
-      }
-      .btn {
-        padding: 14px 0;
-      }
-      .nav-item {
-        padding: 10px 0;
-        font-size: 14px;
-      }
+      body { padding: 8px 12px; }
+      .logo-lottie { width: 90px; height: 90px; }
+      .balance-card { padding: 16px 12px; }
+      .btn { padding: 12px 0; }
+      .nav-item { padding: 8px 0; }
     }
   </style>
 </head>

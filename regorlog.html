@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>DxS VPN — Вход / Регистрация</title>
+  <title>DxS VPN — Вход</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -183,19 +183,16 @@
     .message.error { 
       color: #d93025; 
     }
-    #successBlock, #waitingBlock { 
-      display: none; 
-      flex-direction: column; 
-      align-items: center; 
-      justify-content: center; 
-      width: 100%;
+    .link {
       text-align: center;
+      margin-top: 24px;
+      font-size: 15px;
+      color: #5f6c8a;
     }
-    .small-text { 
-      font-size: 15px; 
-      color: #5f6c8a; 
-      margin-top: 16px; 
-      word-break: break-word;
+    .link a {
+      color: #4285f4;
+      text-decoration: none;
+      font-weight: 500;
     }
     @media (max-width: 380px) {
       .country-select-wrapper { flex: 0 0 80px; }
@@ -209,16 +206,12 @@
 <body>
 
 <div class="container">
-  <div id="formBlock">
+  <div id="loginBlock">
     <div class="lottie-container">
       <lottie-player src="./registration.json" background="transparent" speed="0.9" loop autoplay></lottie-player>
     </div>
 
-    <h1>Регистрация</h1>
-
-    <div class="input-group">
-      <input type="text" id="name" class="input-field" placeholder="Имя" autocomplete="name" />
-    </div>
+    <h1>Вход</h1>
 
     <div class="input-group">
       <div class="phone-row">
@@ -238,37 +231,16 @@
     </div>
 
     <div class="input-group">
-      <input type="password" id="password" class="input-field" placeholder="Пароль" autocomplete="new-password" />
+      <input type="password" id="password" class="input-field" placeholder="Пароль" autocomplete="current-password" />
     </div>
 
-    <div class="input-group">
-      <input type="password" id="passwordConfirm" class="input-field" placeholder="Повторите пароль" autocomplete="new-password" />
+    <button class="btn" id="loginBtn">Войти</button>
+
+    <div class="message" id="loginMsg"></div>
+
+    <div class="link">
+      Ещё нет аккаунта? <a href="registration.html">Зарегистрироваться</a>
     </div>
-
-    <button class="btn" id="submitBtn">Зарегистрироваться</button>
-
-    <div class="message" id="statusMsg"></div>
-  </div>
-
-  <!-- Блок ожидания подтверждения в боте -->
-  <div id="waitingBlock">
-    <div class="lottie-container">
-      <lottie-player src="./welcome.json" background="transparent" speed="0.9" loop autoplay></lottie-player>
-    </div>
-    <h1>Ожидание подтверждения</h1>
-    <div class="message success visible">Перейдите в бота и отправьте свой номер телефона</div>
-    <div class="small-text" id="waitingPhone"></div>
-    <button class="btn" id="checkStatusBtn" style="margin-top:28px;">Проверить статус</button>
-  </div>
-
-  <!-- Блок успешной регистрации -->
-  <div id="successBlock">
-    <div class="lottie-container">
-      <lottie-player src="./france.json" background="transparent" speed="0.9" loop autoplay></lottie-player>
-    </div>
-    <h1>Готово!</h1>
-    <div class="message success visible">Регистрация успешна</div>
-    <button class="btn" id="goToLoginBtn" style="margin-top:28px;">Войти</button>
   </div>
 
   <!-- Блок ввода кода (6 отдельных полей) -->
@@ -294,28 +266,17 @@
 </div>
 
 <script>
-  const API_URL = 'https://vpnbackend.onrender.com'; // ← поменяй на свой реальный URL
+  const API_URL = 'https://vpnbackend.onrender.com';
 
-  // Элементы
-  const nameInput = document.getElementById('name');
+  // Элементы входа
   const countrySelect = document.getElementById('countryCode');
   const selectedFlag = document.getElementById('selectedFlag');
   const phoneNumber = document.getElementById('phoneNumber');
   const passwordInput = document.getElementById('password');
-  const passwordConfirm = document.getElementById('passwordConfirm');
-  const submitBtn = document.getElementById('submitBtn');
-  const statusMsg = document.getElementById('statusMsg');
-  const formBlock = document.getElementById('formBlock');
-  const waitingBlock = document.getElementById('waitingBlock');
-  const successBlock = document.getElementById('successBlock');
-  const waitingPhone = document.getElementById('waitingPhone');
-  const checkStatusBtn = document.getElementById('checkStatusBtn');
-  const goToLoginBtn = document.getElementById('goToLoginBtn');
-  const verifyBlock = document.getElementById('verifyBlock');
-  const verifyBtn = document.getElementById('verifyBtn');
-  const verifyError = document.getElementById('verifyError');
+  const loginBtn = document.getElementById('loginBtn');
+  const loginMsg = document.getElementById('loginMsg');
 
-  // Отдельные поля OTP
+  // OTP
   const otpInputs = [
     document.getElementById('otp1'),
     document.getElementById('otp2'),
@@ -325,19 +286,18 @@
     document.getElementById('otp6')
   ];
 
-  let currentToken = null;
   let currentPhone = '';
 
-  // Переключение флага при смене страны
+  // Флаг страны
   countrySelect.addEventListener('change', () => {
     const opt = countrySelect.options[countrySelect.selectedIndex];
     selectedFlag.textContent = opt.dataset.flag || '🌍';
   });
 
-  // Только цифры в телефоне
+  // Только цифры
   phoneNumber.addEventListener('input', e => e.target.value = e.target.value.replace(/\D/g, ''));
 
-  // Автофокус и переход между полями OTP
+  // Автофокус и переход между OTP полями
   otpInputs.forEach((input, index) => {
     input.addEventListener('input', e => {
       if (e.target.value.length === 1 && index < 5) {
@@ -351,140 +311,85 @@
     });
   });
 
-  // Получить введённый код из 6 полей
   function getOtpCode() {
     return otpInputs.map(i => i.value).join('');
   }
 
-  // Показать сообщение
-  function showStatus(text, isError = false) {
-    statusMsg.textContent = text;
-    statusMsg.style.color = isError ? '#d93025' : '#0f1a3a';
-    statusMsg.classList.add('visible');
+  function showMessage(text, isError = false) {
+    loginMsg.textContent = text;
+    loginMsg.style.color = isError ? '#d93025' : '#188038';
+    loginMsg.classList.add('visible');
   }
 
-  function hideStatus() {
-    statusMsg.classList.remove('visible');
-    statusMsg.textContent = '';
-  }
-
-  // Получить полный номер
   function getFullPhone() {
     return countrySelect.value + phoneNumber.value.trim();
   }
 
-  // Регистрация — шаг 1
-  submitBtn.addEventListener('click', async () => {
-    const name = nameInput.value.trim();
+  // Вход
+  loginBtn.addEventListener('click', async () => {
     const numPart = phoneNumber.value.trim();
     const pass = passwordInput.value.trim();
-    const confirm = passwordConfirm.value.trim();
     currentPhone = getFullPhone();
 
-    if (name.length < 2) return showStatus('Введите имя (минимум 2 символа)', true);
-    if (numPart.length < 9) return showStatus('Номер слишком короткий', true);
-    if (pass.length < 6) return showStatus('Пароль минимум 6 символов', true);
-    if (pass !== confirm) return showStatus('Пароли не совпадают', true);
+    if (numPart.length < 9) return showMessage('Номер слишком короткий', true);
+    if (!pass) return showMessage('Введите пароль', true);
 
-    hideStatus();
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Отправка...';
+    loginBtn.disabled = true;
+    loginBtn.textContent = 'Вход...';
 
     try {
-      const res = await fetch(`${API_URL}/api/register/start`, {
+      const res = await fetch(`${API_URL}/api/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          first_name: name,
-          phone: currentPhone,
-          password: pass,
-          password_confirm: confirm
-        })
+        body: JSON.stringify({ phone: currentPhone, password: pass })
       });
       const data = await res.json();
 
       if (data.success) {
-        formBlock.style.display = 'none';
-        waitingBlock.style.display = 'flex';
-        waitingPhone.textContent = `Номер: ${currentPhone}`;
+        document.getElementById('loginBlock').style.display = 'none';
+        document.getElementById('verifyBlock').style.display = 'block';
+        showMessage('Код отправлен в Telegram', false);
       } else {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Зарегистрироваться';
-        showStatus(data.error || 'Ошибка регистрации', true);
+        showMessage(data.error || 'Неверный номер или пароль', true);
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Войти';
       }
     } catch {
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Зарегистрироваться';
-      showStatus('Ошибка соединения', true);
+      showMessage('Ошибка соединения', true);
+      loginBtn.disabled = false;
+      loginBtn.textContent = 'Войти';
     }
   });
 
-  // Проверка статуса регистрации
-  checkStatusBtn.addEventListener('click', async () => {
-    try {
-      const res = await fetch(`${API_URL}/api/register/check`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: currentPhone })
-      });
-      const data = await res.json();
-
-      if (data.confirmed) {
-        waitingBlock.style.display = 'none';
-        successBlock.style.display = 'flex';
-      } else {
-        showStatus('Ожидаем подтверждения в боте...', false);
-      }
-    } catch {
-      showStatus('Ошибка проверки', true);
-    }
-  });
-
-  // Переход на вход после успеха
-  goToLoginBtn.addEventListener('click', () => {
-    window.location.href = 'regorlog.html';
-  });
-
-  // Верификация кода
-  verifyBtn.addEventListener('click', async () => {
+  // Подтверждение кода
+  document.getElementById('verifyBtn').addEventListener('click', async () => {
     const code = getOtpCode();
     if (code.length !== 6) {
-      verifyError.textContent = 'Введите все 6 цифр';
+      document.getElementById('verifyError').textContent = 'Введите все 6 цифр';
       return;
     }
 
     try {
-      const res = await fetch(`${API_URL}/api/register/verify`, {
+      const res = await fetch(`${API_URL}/api/login/verify`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: currentToken || 'fallback', code })
+        body: JSON.stringify({ phone: currentPhone, code })
       });
       const data = await res.json();
 
       if (data.success) {
         localStorage.setItem('accessToken', data.accessToken);
         localStorage.setItem('refreshToken', data.refreshToken);
-        verifyError.textContent = '';
-        verifyBlock.style.display = 'none';
-        successBlock.style.display = 'flex';
+        document.getElementById('verifyError').textContent = '';
+        alert('Вход успешен! Перенаправляем...');
+        window.location.href = 'main.html';
       } else {
-        verifyError.textContent = data.error || 'Неверный код';
+        document.getElementById('verifyError').textContent = data.error || 'Неверный код';
       }
     } catch {
-      verifyError.textContent = 'Ошибка соединения';
+      document.getElementById('verifyError').textContent = 'Ошибка соединения';
     }
   });
-
-  // Автозагрузка
-  window.onload = () => {
-    const params = new URLSearchParams(window.location.search);
-    currentToken = params.get('token');
-    if (currentToken && params.get('stage') === 'verify') {
-      formBlock.style.display = 'none';
-      verifyBlock.style.display = 'block';
-    }
-    nameInput.focus();
-  };
 </script>
 </body>
 </html>

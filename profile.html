@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>DxS VPN — Профиль</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Google Sans', system-ui, sans-serif;
+      background: linear-gradient(135deg, #f0f4ff 0%, #e6ecff 100%);
+      color: #0f1a3a;
+      min-height: 100vh;
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      -webkit-tap-highlight-color: transparent;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .logo-lottie {
+      width: min(100px, 25vw);
+      height: min(100px, 25vw);
+      margin: 0 auto 4px;
+    }
+    h1 {
+      font-size: clamp(22px, 5vw, 26px);
+      font-weight: 600;
+      margin-bottom: 0;
+    }
+    
+    /* Профиль */
+    .profile-container {
+      max-width: 400px;
+      width: 100%;
+      margin: 0 auto 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    
+    .profile-section {
+      background: white;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(66,133,244,0.12);
+    }
+    
+    .profile-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #eef2f7;
+    }
+    
+    .profile-row:last-child {
+      border-bottom: none;
+    }
+    
+    .profile-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    
+    .profile-label {
+      font-size: 14px;
+      color: #5f6c8a;
+    }
+    
+    .profile-value {
+      font-size: 18px;
+      font-weight: 500;
+      color: #0f1a3a;
+    }
+    
+    .profile-value.password {
+      font-family: monospace;
+      letter-spacing: 2px;
+    }
+    
+    .profile-right {
+      display: flex;
+      align-items: center;
+    }
+    
+    .edit-btn {
+      background: transparent;
+      border: none;
+      color: #4285f4;
+      font-size: 16px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: 20px;
+      transition: all 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    .edit-btn:active {
+      background: rgba(66,133,244,0.1);
+    }
+    
+    .edit-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: #4285f4;
+    }
+    
+    .phone-value {
+      font-family: monospace;
+      font-size: 16px;
+    }
+    
+    /* Навигационный островок */
+    .nav-island {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 40px;
+      padding: 6px;
+      display: flex;
+      flex-direction: row;
+      gap: 4px;
+      max-width: 400px;
+      width: 100%;
+      margin: auto auto 0;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+    
+    .nav-item {
+      flex: 1;
+      padding: 10px 0;
+      font-size: clamp(14px, 3.5vw, 15px);
+      font-weight: 500;
+      color: #5f6c8a;
+      background: transparent;
+      border: none;
+      border-radius: 34px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    .nav-item.active {
+      background: white;
+      color: #4285f4;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(66,133,244,0.2);
+    }
+    
+    .nav-item:active {
+      opacity: 0.7;
+    }
+    
+    /* Модальное окно для пароля */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(4px);
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1000;
+    }
+    
+    .modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      background: white;
+      border-radius: 24px;
+      padding: 24px;
+      max-width: 340px;
+      width: 100%;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+    
+    .modal-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    
+    .modal-text {
+      font-size: 15px;
+      color: #5f6c8a;
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+    
+    .modal-input {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 16px;
+      border: 2px solid #d2e0ff;
+      border-radius: 14px;
+      outline: none;
+      margin-bottom: 16px;
+      text-align: center;
+      letter-spacing: 4px;
+      font-family: monospace;
+    }
+    
+    .modal-input:focus {
+      border-color: #4285f4;
+      box-shadow: 0 0 0 3px rgba(66,133,244,0.12);
+    }
+    
+    .modal-buttons {
+      display: flex;
+      gap: 12px;
+    }
+    
+    .modal-btn {
+      flex: 1;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .modal-btn.primary {
+      background: linear-gradient(145deg, #4285f4, #1967d2);
+      color: white;
+    }
+    
+    .modal-btn.secondary {
+      background: #f0f4ff;
+      color: #4285f4;
+    }
+    
+    .modal-btn:active {
+      transform: scale(0.96);
+    }
+    
+    .content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    @media (max-width: 360px) {
+      body { padding: 8px 12px; }
+      .logo-lottie { width: 90px; height: 90px; }
+      .profile-section { padding: 16px; }
+      .profile-value { font-size: 16px; }
+      .edit-btn { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-lottie">
+    <lottie-player 
+      src="./welcome.json" 
+      background="transparent" 
+      speed="0.9" 
+      loop 
+      autoplay>
+    </lottie-player>
+  </div>
+  <h1>Профиль</h1>
+</header>
+
+<div class="content">
+  <div class="profile-container">
+    <!-- Имя -->
+    <div class="profile-section">
+      <div class="profile-row">
+        <div class="profile-left">
+          <div class="profile-label">Имя</div>
+          <div class="profile-value" id="userName">Александр</div>
+        </div>
+        <div class="profile-right">
+          <button class="edit-btn" id="editNameBtn">
+            <svg viewBox="0 0 24 24">
+              <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+            </svg>
+            изменить
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Телефон -->
+    <div class="profile-section">
+      <div class="profile-row">
+        <div class="profile-left">
+          <div class="profile-label">Телефон для входа</div>
+          <div class="profile-value phone-value" id="userPhone">+7 (999) 123-45-67</div>
+        </div>
+        <div class="profile-right">
+          <button class="edit-btn" id="editPhoneBtn">
+            <svg viewBox="0 0 24 24">
+              <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+            </svg>
+            изменить
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Пароль -->
+    <div class="profile-section">
+      <div class="profile-row">
+        <div class="profile-left">
+          <div class="profile-label">Пароль</div>
+          <div class="profile-value password" id="userPassword">••••••••</div>
+        </div>
+        <div class="profile-right">
+          <button class="edit-btn" id="editPasswordBtn">
+            <svg viewBox="0 0 24 24">
+              <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+            </svg>
+            изменить
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Навигационный островок -->
+  <div class="nav-island">
+    <button class="nav-item" id="navTariffs">Тарифы</button>
+    <button class="nav-item" id="navMain">Главная</button>
+    <button class="nav-item active" id="navProfile">Профиль</button>
+  </div>
+</div>
+
+<!-- Модальное окно для подтверждения пароля -->
+<div class="modal" id="passwordModal">
+  <div class="modal-content">
+    <div class="modal-title">Подтверждение</div>
+    <div class="modal-text">Введите код, отправленный в Telegram</div>
+    <input type="text" class="modal-input" id="codeInput" placeholder="______" maxlength="6" inputmode="numeric">
+    <div class="modal-buttons">
+      <button class="modal-btn secondary" id="cancelModalBtn">Отмена</button>
+      <button class="modal-btn primary" id="confirmCodeBtn">Подтвердить</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Навигация
+  const navTariffs = document.getElementById('navTariffs');
+  const navMain = document.getElementById('navMain');
+  const navProfile = document.getElementById('navProfile');
+  
+  // Кнопки редактирования
+  const editNameBtn = document.getElementById('editNameBtn');
+  const editPhoneBtn = document.getElementById('editPhoneBtn');
+  const editPasswordBtn = document.getElementById('editPasswordBtn');
+  
+  // Модальное окно
+  const passwordModal = document.getElementById('passwordModal');
+  const cancelModalBtn = document.getElementById('cancelModalBtn');
+  const confirmCodeBtn = document.getElementById('confirmCodeBtn');
+  const codeInput = document.getElementById('codeInput');
+  
+  function triggerFeedback(style = 'light') {
+    if (window.Telegram?.WebApp?.HapticFeedback) {
+      try { window.Telegram.WebApp.HapticFeedback.impactOccurred(style); } catch {}
+    }
+  }
+  
+  function setActiveNav(activeItem) {
+    [navTariffs, navMain, navProfile].forEach(item => {
+      item.classList.remove('active');
+    });
+    activeItem.classList.add('active');
+  }
+  
+  // Обработчики для кнопок редактирования
+  editNameBtn.addEventListener('click', () => {
+    triggerFeedback('light');
+    alert('Редактирование имени в разработке');
+  });
+  
+  editPhoneBtn.addEventListener('click', () => {
+    triggerFeedback('light');
+    alert('Редактирование телефона в разработке');
+  });
+  
+  editPasswordBtn.addEventListener('click', () => {
+    triggerFeedback('medium');
+    passwordModal.classList.add('active');
+    
+    // Имитация отправки кода в Telegram
+    if (window.Telegram?.WebApp) {
+      window.Telegram.WebApp.sendData(JSON.stringify({
+        action: 'request_password_code'
+      }));
+    }
+  });
+  
+  // Обработчики модального окна
+  cancelModalBtn.addEventListener('click', () => {
+    triggerFeedback('light');
+    passwordModal.classList.remove('active');
+    codeInput.value = '';
+  });
+  
+  confirmCodeBtn.addEventListener('click', () => {
+    const code = codeInput.value.trim();
+    if (code.length === 6) {
+      triggerFeedback('heavy');
+      alert('Код подтвержден. Редактирование пароля в разработке');
+      passwordModal.classList.remove('active');
+      codeInput.value = '';
+    } else {
+      triggerFeedback('light');
+      alert('Введите 6-значный код');
+    }
+  });
+  
+  codeInput.addEventListener('input', (e) => {
+    e.target.value = e.target.value.replace(/\D/g, '');
+  });
+  
+  codeInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && codeInput.value.length === 6) {
+      confirmCodeBtn.click();
+    }
+  });
+  
+  // Закрытие модального окна по клику вне его
+  passwordModal.addEventListener('click', (e) => {
+    if (e.target === passwordModal) {
+      cancelModalBtn.click();
+    }
+  });
+  
+  // Навигационные обработчики
+  navTariffs.addEventListener('click', () => {
+    triggerFeedback('light');
+    setActiveNav(navTariffs);
+    window.location.href = 'vpn.html';
+  });
+  
+  navMain.addEventListener('click', () => {
+    triggerFeedback('light');
+    setActiveNav(navMain);
+    window.location.href = 'main.html';
+  });
+  
+  navProfile.addEventListener('click', () => {
+    triggerFeedback('light');
+    setActiveNav(navProfile);
+    // Уже в профиле
+  });
+  
+  if (window.Telegram?.WebApp) {
+    window.Telegram.WebApp.ready();
+    window.Telegram.WebApp.expand();
+  }
+</script>
+</body>
+</html>

@@ -1,388 +1,319 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>DxS VPN — Вход</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
-  <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body { 
-      font-family: 'Google Sans', system-ui, sans-serif; 
-      background: linear-gradient(135deg, #f0f4ff 0%, #e6ecff 100%); 
-      color: #0f1a3a; 
-      min-height: 100vh;
-      height: 100vh;
-      overflow-y: auto;
-      overflow-x: hidden;
-      touch-action: pan-y;
-      -webkit-overflow-scrolling: touch;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .container { 
-      min-height: 100vh;
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
-      justify-content: center; 
-      padding: 20px 16px; 
-    }
-    .lottie-container { 
-      width: min(160px, 35vw); 
-      height: min(160px, 35vw); 
-      margin-bottom: clamp(16px, 3vh, 24px); 
-      filter: drop-shadow(0 8px 24px rgba(26,115,232,0.24)); 
-    }
-    h1 { 
-      font-size: clamp(24px, 6vw, 28px); 
-      font-weight: 600; 
-      text-align: center; 
-      margin-bottom: clamp(20px, 4vh, 28px); 
-      line-height: 1.3; 
-    }
-    .input-group { 
-      width: 100%; 
-      max-width: 380px; 
-      margin-bottom: 12px; 
-    }
-    .phone-row { 
-      display: flex; 
-      align-items: stretch; 
-      border: 2px solid #d2e0ff; 
-      border-radius: 14px; 
-      overflow: hidden; 
-      background: white; 
-      width: 100%;
-    }
-    .phone-row:focus-within { 
-      border-color: #4285f4; 
-      box-shadow: 0 0 0 3px rgba(66,133,244,0.12); 
-    }
-    .country-select-wrapper { 
-      position: relative; 
-      flex: 0 0 92px; 
-      border-right: 1px solid #e0eaff; 
-      background: #f8fbff; 
-    }
-    .country-select { 
-      appearance: none; 
-      border: none; 
-      padding: 0 32px 0 12px; 
-      font-size: 16px; 
-      background: transparent; 
-      cursor: pointer; 
-      height: 100%; 
-      width: 100%; 
-      text-align: center; 
-      outline: none;
-    }
-    .flag { 
-      position: absolute; 
-      right: 8px; 
-      top: 50%; 
-      transform: translateY(-50%); 
-      font-size: 18px; 
-      pointer-events: none; 
-    }
-    .number-input { 
-      flex: 1; 
-      border: none; 
-      padding: 14px 16px; 
-      font-size: 16px; 
-      outline: none; 
-      width: 100%;
-    }
-    input[type="tel"]::-webkit-outer-spin-button, 
-    input[type="tel"]::-webkit-inner-spin-button { 
-      -webkit-appearance: none; 
-      margin: 0; 
-    }
-    .input-field {
-      width: 100%;
-      padding: 14px 16px;
-      font-size: 16px;
-      border: 2px solid #d2e0ff;
-      border-radius: 14px;
-      outline: none;
-      background: white;
-      transition: all 0.2s;
-    }
-    .input-field:focus {
-      border-color: #4285f4;
-      box-shadow: 0 0 0 3px rgba(66,133,244,0.12);
-    }
-    .btn { 
-      width: 100%; 
-      max-width: 380px; 
-      padding: 16px; 
-      font-size: 18px; 
-      font-weight: 600; 
-      color: white; 
-      background: linear-gradient(145deg, #4285f4, #1967d2); 
-      border: none; 
-      border-radius: 14px; 
-      box-shadow: 0 8px 24px rgba(66,133,244,0.3); 
-      cursor: pointer; 
-      transition: all 0.2s; 
-      margin-top: 8px;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .btn:active { 
-      transform: scale(0.97); 
-      opacity: 0.9;
-    }
-    .btn:disabled { 
-      opacity: 0.6; 
-      transform: none; 
-      box-shadow: none; 
-      cursor: not-allowed; 
-    }
-    .link { 
-      margin-top: 20px; 
-      font-size: 15px; 
-      color: #4285f4; 
-      font-weight: 500; 
-      cursor: pointer; 
-      padding: 10px;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .link:active { 
-      opacity: 0.7; 
-    }
-    .message { 
-      font-size: 15px; 
-      text-align: center; 
-      margin-top: 16px; 
-      line-height: 1.4; 
-      opacity: 0; 
-      transition: opacity 0.3s; 
-      white-space: pre-line; 
-      width: 100%;
-      max-width: 380px;
-    }
-    .message.visible { 
-      opacity: 1; 
-    }
-    .message.error { 
-      color: #d93025; 
-    }
-    .message.success { 
-      color: #188038; 
-    }
-    @media (max-width: 380px) {
-      .country-select-wrapper { flex: 0 0 80px; }
-      .country-select { padding: 0 28px 0 8px; font-size: 15px; }
-      .flag { right: 6px; font-size: 16px; }
-      .number-input, .input-field { padding: 12px; font-size: 15px; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DxS VPN — Вход / Регистрация</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --bg: #0a0a0a;
+            --card: #111111;
+            --accent: #00ff9d;
+            --text: #e0e0e0;
+            --gray: #666;
+        }
+        
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+        
+        .card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 40px 30px;
+            border: 1px solid #222;
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 32px;
+            color: var(--accent);
+            margin-bottom: 40px;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #222;
+        }
+        
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 16px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            color: var(--accent);
+            border-bottom: 3px solid var(--accent);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+        }
+        
+        button {
+            width: 100%;
+            padding: 16px;
+            background: var(--accent);
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,255,157,0.3);
+        }
+        
+        .toggle-link {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--gray);
+        }
+        
+        .toggle-link a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .error {
+            color: #ff5252;
+            text-align: center;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+        
+        .hidden { display: none !important; }
+    </style>
 </head>
 <body>
 
 <div class="container">
-  <div class="lottie-container">
-    <lottie-player src="./regorlog.json" background="transparent" speed="0.9" loop autoplay></lottie-player>
-  </div>
+    <h1>DxS VPN</h1>
 
-  <h1>Вход в DxS VPN</h1>
+    <div class="card">
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('register')">Регистрация</div>
+            <div class="tab" onclick="showTab('login')">Вход</div>
+        </div>
 
-  <div class="input-group">
-    <div class="phone-row">
-      <div class="country-select-wrapper">
-        <select class="country-select" id="countryCode">
-          <option value="+7" data-flag="🇷🇺" selected>+7</option>
-          <option value="+1" data-flag="🇺🇸">+1</option>
-          <option value="+44" data-flag="🇬🇧">+44</option>
-          <option value="+49" data-flag="🇩🇪">+49</option>
-          <option value="+33" data-flag="🇫🇷">+33</option>
-          <option value="+375" data-flag="🇧🇾">+375</option>
-        </select>
-        <span class="flag" id="selectedFlag">🇷🇺</span>
-      </div>
-      <input type="tel" id="phoneNumber" class="number-input" placeholder="9991234567" inputmode="numeric" pattern="[0-9]*" autocomplete="tel-national" />
+        <!-- Регистрация -->
+        <div id="register" class="form">
+            <div class="form-group">
+                <label>Имя</label>
+                <input type="text" id="regName" placeholder="Ваше имя">
+            </div>
+            <div class="form-group">
+                <label>Номер телефона</label>
+                <input type="tel" id="regPhone" placeholder="9111234567 или +79111234567">
+            </div>
+            <div class="form-group">
+                <label>Пароль</label>
+                <input type="password" id="regPass" placeholder="Минимум 8 символов">
+            </div>
+            <div class="form-group">
+                <label>Повторите пароль</label>
+                <input type="password" id="regPassConfirm" placeholder="Повторите пароль">
+            </div>
+            <button onclick="startRegistration()">Зарегистрироваться</button>
+            <div id="regError" class="error"></div>
+        </div>
+
+        <!-- Вход -->
+        <div id="login" class="form hidden">
+            <div class="form-group">
+                <label>Номер телефона</label>
+                <input type="tel" id="loginPhone" placeholder="9111234567 или +79111234567">
+            </div>
+            <div class="form-group">
+                <label>Пароль</label>
+                <input type="password" id="loginPass" placeholder="Ваш пароль">
+            </div>
+            <button onclick="startLogin()">Войти</button>
+            <div id="loginError" class="error"></div>
+        </div>
+
+        <!-- Ввод кода подтверждения -->
+        <div id="verify" class="form hidden">
+            <h3 style="text-align:center; margin-bottom:20px;">Подтверждение</h3>
+            <p style="text-align:center; color:var(--gray); margin-bottom:20px;">
+                Введите 6-значный код из Telegram
+            </p>
+            <div class="form-group">
+                <input type="text" id="verifyCode" placeholder="000000" maxlength="6" style="text-align:center; font-size:24px;">
+            </div>
+            <button onclick="verifyCode()">Подтвердить</button>
+            <div id="verifyError" class="error"></div>
+            <div id="verifySuccess" class="success" style="color:var(--accent); text-align:center; margin-top:15px;"></div>
+        </div>
+
+        <div class="toggle-link" id="toggleRegister">
+            Уже есть аккаунт? <a href="#" onclick="showTab('login')">Войти</a>
+        </div>
+        <div class="toggle-link hidden" id="toggleLogin">
+            Нет аккаунта? <a href="#" onclick="showTab('register')">Зарегистрироваться</a>
+        </div>
     </div>
-  </div>
-
-  <div class="input-group" id="codeGroup" style="display:none;">
-    <input type="text" id="code" class="input-field" placeholder="Код из Telegram" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="one-time-code" />
-  </div>
-
-  <div class="input-group" id="passwordGroup" style="display:none;">
-    <input type="password" id="password" class="input-field" placeholder="Пароль" autocomplete="current-password" />
-  </div>
-
-  <button class="btn" id="submitBtn">Продолжить</button>
-
-  <div class="link" id="toRegister">Ещё нет аккаунта? Зарегистрироваться</div>
-
-  <div class="message" id="statusMsg"></div>
 </div>
 
 <script>
-  const countrySelect = document.getElementById('countryCode');
-  const selectedFlag = document.getElementById('selectedFlag');
-  const phoneNumber = document.getElementById('phoneNumber');
-  const codeInput = document.getElementById('code');
-  const passwordInput = document.getElementById('password');
-  const codeGroup = document.getElementById('codeGroup');
-  const passwordGroup = document.getElementById('passwordGroup');
-  const submitBtn = document.getElementById('submitBtn');
-  const toRegister = document.getElementById('toRegister');
-  const statusMsg = document.getElementById('statusMsg');
+    const API_URL = 'https://vpnbackend.onrender.com'; // ← здесь твой реальный URL бэкенда
 
-  let step = 'phone';
-  let fullPhone = '';
+    let currentToken = null;
+    let currentPhone = null;
 
-  countrySelect.addEventListener('change', () => {
-    const opt = countrySelect.options[countrySelect.selectedIndex];
-    selectedFlag.textContent = opt.dataset.flag || '🌍';
-  });
+    function showTab(tab) {
+        document.querySelectorAll('.form').forEach(f => f.classList.add('hidden'));
+        document.getElementById(tab).classList.remove('hidden');
 
-  phoneNumber.addEventListener('input', e => e.target.value = e.target.value.replace(/\D/g, ''));
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelector(`.tab[onclick="showTab('${tab}')"]`).classList.add('active');
 
-  function showStatus(text, isError = false, isSuccess = false) {
-    statusMsg.textContent = text;
-    if (isError) statusMsg.style.color = '#d93025';
-    else if (isSuccess) statusMsg.style.color = '#188038';
-    else statusMsg.style.color = '#0f1a3a';
-    statusMsg.classList.add('visible');
-  }
-
-  function hideStatus() {
-    statusMsg.classList.remove('visible');
-    statusMsg.textContent = '';
-  }
-
-  function triggerFeedback(style = 'light') {
-    if (window.Telegram?.WebApp?.HapticFeedback) {
-      try { window.Telegram.WebApp.HapticFeedback.impactOccurred(style); } catch {}
+        document.getElementById('toggleRegister').classList.toggle('hidden', tab === 'login');
+        document.getElementById('toggleLogin').classList.toggle('hidden', tab === 'register');
     }
-  }
 
-  function getFullPhone() {
-    return countrySelect.value + phoneNumber.value.trim();
-  }
+    async function startRegistration() {
+        const name = document.getElementById('regName').value.trim();
+        const phone = document.getElementById('regPhone').value.trim();
+        const pass = document.getElementById('regPass').value;
+        const passConfirm = document.getElementById('regPassConfirm').value;
 
-  function handleBotResponse(event) {
-    try {
-      const data = JSON.parse(event.data);
-      
-      if (data.action === 'login_code_sent') {
-        hideStatus();
-        showStatus('Код отправлен в Telegram', false, true);
-        codeGroup.style.display = 'block';
-        phoneNumber.disabled = true;
-        countrySelect.disabled = true;
-        submitBtn.textContent = 'Проверить код';
-        submitBtn.disabled = false;
-        step = 'code';
-        codeInput.focus();
-      }
-      
-      else if (data.action === 'login_code_verified') {
-        hideStatus();
-        showStatus('Код верный, введите пароль', false, true);
-        passwordGroup.style.display = 'block';
-        codeInput.disabled = true;
-        submitBtn.textContent = 'Войти';
-        submitBtn.disabled = false;
-        step = 'password';
-        passwordInput.focus();
-      }
-      
-      else if (data.action === 'login_success') {
-        hideStatus();
-        showStatus('Вход выполнен!', false, true);
-        submitBtn.disabled = true;
-        setTimeout(() => window.location.href = 'main.html', 1000);
-      }
-      
-      else if (data.action === 'login_error') {
-        submitBtn.disabled = false;
-        showStatus(data.message || 'Ошибка входа', true);
-      }
-      
-      else if (data.action === 'server_error') {
-        submitBtn.disabled = false;
-        showStatus('Ошибка сервера. Повторите позже', true);
-      }
-    } catch (e) {}
-  }
+        if (!name || !phone || !pass || pass !== passConfirm) {
+            document.getElementById('regError').textContent = 'Заполните все поля или пароли не совпадают';
+            return;
+        }
 
-  window.addEventListener('message', handleBotResponse);
+        try {
+            const res = await fetch(`${API_URL}/api/register/start`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ first_name: name, phone, password: pass, password_confirm: passConfirm })
+            });
+            const data = await res.json();
 
-  function handleSubmit() {
-    const numPart = phoneNumber.value.trim();
-    fullPhone = getFullPhone();
-
-    if (step === 'phone') {
-      if (numPart.length < 9) return showStatus('Номер слишком короткий', true);
-      
-      hideStatus();
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Отправка...';
-      
-      if (window.Telegram?.WebApp) {
-        window.Telegram.WebApp.sendData(JSON.stringify({
-          action: 'request_login',
-          phone: fullPhone
-        }));
-        triggerFeedback('heavy');
-      }
-    } 
-    else if (step === 'code') {
-      const code = codeInput.value.trim();
-      if (code.length !== 6) return showStatus('Введите 6-значный код', true);
-      
-      hideStatus();
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Проверка...';
-      
-      if (window.Telegram?.WebApp) {
-        window.Telegram.WebApp.sendData(JSON.stringify({
-          action: 'verify_code',
-          phone: fullPhone,
-          code: code
-        }));
-        triggerFeedback('medium');
-      }
+            if (data.success) {
+                window.location.href = data.botLink;
+            } else {
+                document.getElementById('regError').textContent = data.error || 'Ошибка';
+            }
+        } catch {
+            document.getElementById('regError').textContent = 'Ошибка соединения';
+        }
     }
-    else if (step === 'password') {
-      const password = passwordInput.value.trim();
-      if (!password) return showStatus('Введите пароль', true);
-      
-      hideStatus();
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Вход...';
-      
-      if (window.Telegram?.WebApp) {
-        window.Telegram.WebApp.sendData(JSON.stringify({
-          action: 'submit_login',
-          phone: fullPhone,
-          password: password
-        }));
-        triggerFeedback('heavy');
-      }
+
+    async function startLogin() {
+        const phone = document.getElementById('loginPhone').value.trim();
+        const pass = document.getElementById('loginPass').value;
+
+        if (!phone || !pass) {
+            document.getElementById('loginError').textContent = 'Заполните телефон и пароль';
+            return;
+        }
+
+        try {
+            const res = await fetch(`${API_URL}/api/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone, password: pass })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                currentPhone = phone;
+                showTab('verify');
+                document.getElementById('loginError').textContent = '';
+            } else {
+                document.getElementById('loginError').textContent = data.error || 'Ошибка';
+            }
+        } catch {
+            document.getElementById('loginError').textContent = 'Ошибка соединения';
+        }
     }
-  }
 
-  submitBtn.addEventListener('click', handleSubmit);
+    async function verifyCode() {
+        const code = document.getElementById('verifyCode').value.trim();
 
-  toRegister.addEventListener('click', () => {
-    triggerFeedback('light');
-    setTimeout(() => window.location.href = 'registration.html', 150);
-  });
+        if (code.length !== 6 || !/^\d{6}$/.test(code)) {
+            document.getElementById('verifyError').textContent = 'Код должен состоять из 6 цифр';
+            return;
+        }
 
-  if (window.Telegram?.WebApp) {
-    const tg = window.Telegram.WebApp;
-    tg.ready();
-    tg.expand();
-  }
+        let endpoint = currentToken ? '/api/register/verify' : '/api/login/verify';
+        let body = currentToken 
+            ? { token: currentToken, code }
+            : { phone: currentPhone, code };
 
-  phoneNumber.focus();
+        try {
+            const res = await fetch(`${API_URL}${endpoint}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                localStorage.setItem('accessToken', data.accessToken);
+                localStorage.setItem('refreshToken', data.refreshToken);
+                document.getElementById('verifySuccess').textContent = 'Успех! Перенаправляем в личный кабинет...';
+                document.getElementById('verifyError').textContent = '';
+                setTimeout(() => window.location.href = 'main.html', 1500);
+            } else {
+                document.getElementById('verifyError').textContent = data.error || 'Неверный код';
+            }
+        } catch {
+            document.getElementById('verifyError').textContent = 'Ошибка соединения';
+        }
+    }
+
+    window.onload = () => {
+        const params = new URLSearchParams(window.location.search);
+        currentToken = params.get('token');
+        if (currentToken && params.get('stage') === 'verify') {
+            showTab('verify');
+        } else {
+            showTab('register');
+        }
+    };
 </script>
 </body>
 </html>

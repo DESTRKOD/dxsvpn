@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>DxS VPN — Тарифы</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Google Sans', system-ui, sans-serif;
+      background: linear-gradient(135deg, #f0f4ff 0%, #e6ecff 100%);
+      color: #0f1a3a;
+      min-height: 100vh;
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      -webkit-tap-highlight-color: transparent;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .logo-lottie {
+      width: min(100px, 25vw);
+      height: min(100px, 25vw);
+      margin: 0 auto 4px;
+    }
+    h1 {
+      font-size: clamp(22px, 5vw, 26px);
+      font-weight: 600;
+      margin-bottom: 0;
+    }
+    
+    /* Тарифы */
+    .tariffs-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-width: 400px;
+      width: 100%;
+      margin: 0 auto 20px;
+    }
+    
+    .tariff-card {
+      background: white;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(66,133,244,0.12);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: all 0.2s;
+      border: 2px solid transparent;
+    }
+    
+    .tariff-card.popular {
+      border: 2px solid #4285f4;
+      background: linear-gradient(145deg, #ffffff, #f8fbff);
+    }
+    
+    .tariff-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .tariff-name {
+      font-size: 20px;
+      font-weight: 600;
+      color: #0f1a3a;
+    }
+    
+    .tariff-price {
+      font-size: 22px;
+      font-weight: 700;
+      color: #4285f4;
+    }
+    
+    .tariff-price sup {
+      font-size: 14px;
+      font-weight: 500;
+      color: #5f6c8a;
+      margin-left: 2px;
+    }
+    
+    .tariff-description {
+      font-size: 15px;
+      color: #5f6c8a;
+      line-height: 1.4;
+    }
+    
+    .tariff-footer {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 4px;
+    }
+    
+    .tariff-btn {
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: 600;
+      color: white;
+      background: linear-gradient(145deg, #4285f4, #1967d2);
+      border: none;
+      border-radius: 14px;
+      box-shadow: 0 4px 12px rgba(66,133,244,0.3);
+      cursor: pointer;
+      transition: all 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    .tariff-btn:active {
+      transform: scale(0.96);
+      opacity: 0.9;
+    }
+    
+    .popular-badge {
+      background: #4285f4;
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-left: 12px;
+    }
+    
+    /* Навигационный островок */
+    .nav-island {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 40px;
+      padding: 6px;
+      display: flex;
+      flex-direction: row;
+      gap: 4px;
+      max-width: 400px;
+      width: 100%;
+      margin: auto auto 0;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+    
+    .nav-item {
+      flex: 1;
+      padding: 10px 0;
+      font-size: clamp(14px, 3.5vw, 15px);
+      font-weight: 500;
+      color: #5f6c8a;
+      background: transparent;
+      border: none;
+      border-radius: 34px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    .nav-item.active {
+      background: white;
+      color: #4285f4;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(66,133,244,0.2);
+    }
+    
+    .nav-item:active {
+      opacity: 0.7;
+    }
+    
+    .content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    @media (max-width: 360px) {
+      body { padding: 8px 12px; }
+      .logo-lottie { width: 90px; height: 90px; }
+      .tariff-card { padding: 16px; }
+      .tariff-name { font-size: 18px; }
+      .tariff-price { font-size: 20px; }
+      .tariff-btn { padding: 10px 20px; font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-lottie">
+    <lottie-player 
+      src="./welcome.json" 
+      background="transparent" 
+      speed="0.9" 
+      loop 
+      autoplay>
+    </lottie-player>
+  </div>
+  <h1>Тарифы VPN</h1>
+</header>
+
+<div class="content">
+  <div class="tariffs-container">
+    <!-- Тариф 1: Базовый -->
+    <div class="tariff-card">
+      <div class="tariff-header">
+        <span class="tariff-name">Базовый</span>
+        <span class="tariff-price">299<sup>₽/мес</sup></span>
+      </div>
+      <div class="tariff-description">
+        • Скорость до 50 Мбит/с<br>
+        • 3 устройства<br>
+        • Сервера Франция
+      </div>
+      <div class="tariff-footer">
+        <button class="tariff-btn">Активировать</button>
+      </div>
+    </div>
+    
+    <!-- Тариф 2: Оптимальный (популярный) -->
+    <div class="tariff-card popular">
+      <div class="tariff-header">
+        <div style="display: flex; align-items: center;">
+          <span class="tariff-name">Оптимальный</span>
+          <span class="popular-badge">🔥 Выбор</span>
+        </div>
+        <span class="tariff-price">499<sup>₽/мес</sup></span>
+      </div>
+      <div class="tariff-description">
+        • Скорость до 150 Мбит/с<br>
+        • 5 устройств<br>
+        • Сервера Франция + Германия<br>
+        • Приоритетная поддержка
+      </div>
+      <div class="tariff-footer">
+        <button class="tariff-btn">Активировать</button>
+      </div>
+    </div>
+    
+    <!-- Тариф 3: Премиум -->
+    <div class="tariff-card">
+      <div class="tariff-header">
+        <span class="tariff-name">Премиум</span>
+        <span class="tariff-price">999<sup>₽/мес</sup></span>
+      </div>
+      <div class="tariff-description">
+        • Скорость без ограничений<br>
+        • 10 устройств<br>
+        • Все сервера Европы<br>
+        • Выделенный IP<br>
+        • 24/7 поддержка
+      </div>
+      <div class="tariff-footer">
+        <button class="tariff-btn">Активировать</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Навигационный островок -->
+  <div class="nav-island">
+    <button class="nav-item active" id="navTariffs">Тарифы</button>
+    <button class="nav-item" id="navMain">Главная</button>
+    <button class="nav-item" id="navProfile">Профиль</button>
+  </div>
+</div>
+
+<script>
+  // Навигация
+  const navTariffs = document.getElementById('navTariffs');
+  const navMain = document.getElementById('navMain');
+  const navProfile = document.getElementById('navProfile');
+  
+  function triggerFeedback(style = 'light') {
+    if (window.Telegram?.WebApp?.HapticFeedback) {
+      try { window.Telegram.WebApp.HapticFeedback.impactOccurred(style); } catch {}
+    }
+  }
+  
+  function setActiveNav(activeItem) {
+    [navTariffs, navMain, navProfile].forEach(item => {
+      item.classList.remove('active');
+    });
+    activeItem.classList.add('active');
+  }
+  
+  // Обработчики для кнопок активации
+  document.querySelectorAll('.tariff-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      triggerFeedback('medium');
+      alert('Функция активации тарифа в разработке');
+    });
+  });
+  
+  // Навигационные обработчики
+  navTariffs.addEventListener('click', () => {
+    triggerFeedback('light');
+    setActiveNav(navTariffs);
+    // Уже на странице тарифов
+  });
+  
+  navMain.addEventListener('click', () => {
+    triggerFeedback('light');
+    setActiveNav(navMain);
+    window.location.href = 'main.html';
+  });
+  
+  navProfile.addEventListener('click', () => {
+    triggerFeedback('light');
+    setActiveNav(navProfile);
+    window.location.href = 'profile.html';
+  });
+  
+  if (window.Telegram?.WebApp) {
+    window.Telegram.WebApp.ready();
+    window.Telegram.WebApp.expand();
+  }
+</script>
+</body>
+</html>

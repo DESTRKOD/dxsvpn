@@ -1,251 +1,330 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>DxS VPN — Главное меню</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
-  <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body {
-      font-family: 'Google Sans', system-ui, sans-serif;
-      background: linear-gradient(135deg, #f0f4ff 0%, #e6ecff 100%);
-      color: #0f1a3a;
-      min-height: 100vh;
-      padding: 12px 16px;
-      display: flex;
-      flex-direction: column;
-      -webkit-tap-highlight-color: transparent;
-    }
-    header {
-      text-align: center;
-      margin-bottom: 8px;
-    }
-    .logo-lottie {
-      width: min(100px, 25vw);
-      height: min(100px, 25vw);
-      margin: 0 auto 4px;
-    }
-    h1 {
-      font-size: clamp(22px, 5vw, 26px);
-      font-weight: 600;
-      margin-bottom: 0;
-    }
-    .balance-card {
-      background: white;
-      border-radius: 20px;
-      padding: 20px 16px;
-      box-shadow: 0 12px 32px rgba(66,133,244,0.18);
-      text-align: center;
-      margin-bottom: 16px;
-      width: 100%;
-      max-width: 400px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .balance-label {
-      font-size: clamp(14px, 3.5vw, 16px);
-      color: #5f6c8a;
-      margin-bottom: 4px;
-    }
-    .balance-value {
-      font-size: clamp(32px, 7vw, 38px);
-      font-weight: 700;
-      color: #0f1a3a;
-      margin-bottom: 0;
-    }
-    .balance-value sup {
-      font-size: clamp(18px, 3.5vw, 22px);
-      vertical-align: super;
-    }
-    .actions {
-      display: flex;
-      flex-direction: row;
-      gap: 12px;
-      max-width: 400px;
-      margin: 0 auto 16px;
-      width: 100%;
-    }
-    .btn {
-      flex: 1;
-      padding: 14px 0;
-      font-size: clamp(15px, 4vw, 17px);
-      font-weight: 600;
-      color: white;
-      background: linear-gradient(145deg, #4285f4, #1967d2);
-      border: none;
-      border-radius: 14px;
-      box-shadow: 0 8px 20px rgba(66,133,244,0.3);
-      cursor: pointer;
-      transition: all 0.2s;
-      text-align: center;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .btn:active {
-      transform: scale(0.96);
-      opacity: 0.9;
-    }
-    
-    /* Навигационный островок */
-    .nav-island {
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border-radius: 40px;
-      padding: 6px;
-      display: flex;
-      flex-direction: row;
-      gap: 4px;
-      max-width: 400px;
-      width: 100%;
-      margin: 0 auto 0;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.5);
-    }
-    
-    .nav-item {
-      flex: 1;
-      padding: 10px 0;
-      font-size: clamp(14px, 3.5vw, 15px);
-      font-weight: 500;
-      color: #5f6c8a;
-      background: transparent;
-      border: none;
-      border-radius: 34px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-align: center;
-      -webkit-tap-highlight-color: transparent;
-    }
-    
-    .nav-item.active {
-      background: white;
-      color: #4285f4;
-      font-weight: 600;
-      box-shadow: 0 4px 12px rgba(66,133,244,0.2);
-    }
-    
-    .nav-item:active {
-      opacity: 0.7;
-    }
-    
-    footer {
-      margin-top: auto;
-      text-align: center;
-      color: #8a94ad;
-      font-size: clamp(12px, 3vw, 13px);
-      padding-top: 20px;
-    }
-    
-    .content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-    }
-    
-    @media (max-width: 360px) {
-      body { padding: 8px 12px; }
-      .logo-lottie { width: 90px; height: 90px; }
-      .balance-card { padding: 16px 12px; }
-      .btn { padding: 12px 0; }
-      .nav-item { padding: 8px 0; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DxS VPN — Личный кабинет</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --bg: #0a0a0a;
+            --card: #111111;
+            --accent: #00ff9d;
+            --text: #e0e0e0;
+            --gray: #666;
+        }
+        
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #222;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+            margin-left: 30px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover { color: var(--accent); }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .balance-card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            border: 1px solid #222;
+        }
+        
+        .balance-card h1 {
+            font-size: 18px;
+            color: var(--gray);
+            margin-bottom: 10px;
+        }
+        
+        .balance-amount {
+            font-size: 52px;
+            font-weight: 700;
+            color: var(--accent);
+            margin: 10px 0;
+        }
+        
+        .topup-btn {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 16px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        
+        .topup-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0,255,157,0.3);
+        }
+        
+        .history {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid #222;
+        }
+        
+        .history h2 {
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 14px 10px;
+            text-align: left;
+            border-bottom: 1px solid #222;
+        }
+        
+        th {
+            color: var(--gray);
+            font-weight: 500;
+        }
+        
+        .modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        
+        .modal-content {
+            background: var(--card);
+            padding: 40px 30px;
+            border-radius: 20px;
+            width: 380px;
+            text-align: center;
+            border: 1px solid #222;
+        }
+        
+        .modal-content input {
+            width: 100%;
+            padding: 16px;
+            font-size: 24px;
+            text-align: center;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            color: white;
+            margin: 20px 0;
+        }
+        
+        .modal-content button {
+            width: 100%;
+            padding: 16px;
+            font-size: 18px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        .btn-green { background: var(--accent); color: #000; font-weight: 600; }
+        .btn-gray { background: #333; color: white; }
+        
+        .success-msg {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #00c853;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            display: none;
+            z-index: 10000;
+            font-weight: 600;
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <header>
+            <div class="logo">DxS VPN</div>
+            <nav>
+                <a href="#">Главная</a>
+                <a href="#">Тарифы</a>
+                <a href="#">Поддержка</a>
+                <a href="#" onclick="logout()">Выход</a>
+            </nav>
+        </header>
 
-<header>
-  <div class="logo-lottie">
-    <lottie-player 
-      src="./welcome.json" 
-      background="transparent" 
-      speed="0.9" 
-      loop 
-      autoplay>
-    </lottie-player>
-  </div>
-  <h1>DxS VPN</h1>
-</header>
+        <div class="main-content">
+            <div class="balance-card">
+                <h1>Ваш баланс</h1>
+                <div class="balance-amount" id="balance">0<span style="font-size:24px">₽</span></div>
+                <button class="topup-btn" onclick="openTopupModal()">Пополнить баланс</button>
+            </div>
 
-<div class="content">
-  <div class="balance-card">
-    <div class="balance-label">Ваш баланс</div>
-    <div class="balance-value">0<sup>₽</sup></div>
-  </div>
+            <div class="history">
+                <h2>История операций</h2>
+                <table id="historyTable">
+                    <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th>Тип</th>
+                            <th>Сумма</th>
+                            <th>Статус</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
-  <div class="actions">
-    <button class="btn" id="replenishBtn">Пополнить</button>
-    <button class="btn" id="historyBtn">История</button>
-  </div>
+    <div id="topupModal" class="modal">
+        <div class="modal-content">
+            <h2>Пополнение баланса</h2>
+            <p style="color:#888; margin:15px 0;">Сумма от 10 до 10 000 ₽</p>
+            <input type="number" id="amountInput" min="10" max="10000" placeholder="1000">
+            <button class="btn-green" onclick="createBileePayment()">Продолжить к оплате</button>
+            <button class="btn-gray" onclick="closeModal()">Отмена</button>
+        </div>
+    </div>
 
-  <!-- Навигационный островок под кнопками -->
-  <div class="nav-island">
-    <button class="nav-item" id="navTariffs">Тарифы</button>
-    <button class="nav-item active" id="navMain">Главная</button>
-    <button class="nav-item" id="navProfile">Профиль</button>
-  </div>
-</div>
+    <div id="successMsg" class="success-msg">
+        ✅ Оплата прошла успешно! Баланс обновлён
+    </div>
 
-<footer>
-  © 2026 DxS VPN
-</footer>
+    <script>
+        const API_URL = 'https://vpnbackend.onrender.com';
 
-<script>
-  const replenishBtn = document.getElementById('replenishBtn');
-  const historyBtn = document.getElementById('historyBtn');
-  
-  // Навигация
-  const navTariffs = document.getElementById('navTariffs');
-  const navMain = document.getElementById('navMain');
-  const navProfile = document.getElementById('navProfile');
-  
-  function triggerFeedback(style = 'light') {
-    if (window.Telegram?.WebApp?.HapticFeedback) {
-      try { window.Telegram.WebApp.HapticFeedback.impactOccurred(style); } catch {}
-    }
-  }
-  
-  function setActiveNav(activeItem) {
-    [navTariffs, navMain, navProfile].forEach(item => {
-      item.classList.remove('active');
-    });
-    activeItem.classList.add('active');
-  }
-  
-  replenishBtn.addEventListener('click', () => {
-    triggerFeedback('medium');
-    alert('Функция пополнения в разработке');
-  });
-  
-  historyBtn.addEventListener('click', () => {
-    triggerFeedback('medium');
-    alert('История операций в разработке');
-  });
-  
-  // Навигационные обработчики с реальными переходами
-  navTariffs.addEventListener('click', () => {
-    triggerFeedback('light');
-    window.location.href = 'vpn.html';
-  });
-  
-  navMain.addEventListener('click', () => {
-    triggerFeedback('light');
-    // Уже на главной, ничего не делаем
-  });
-  
-  navProfile.addEventListener('click', () => {
-    triggerFeedback('light');
-    window.location.href = 'profile.html';
-  });
-  
-  if (window.Telegram?.WebApp) {
-    window.Telegram.WebApp.ready();
-    window.Telegram.WebApp.expand();
-  }
-</script>
+        let balance = parseInt(localStorage.getItem('dxs_balance')) || 0;
+        let history = JSON.parse(localStorage.getItem('dxs_history')) || [];
+
+        function updateUI() {
+            document.getElementById('balance').innerHTML = balance + '<span style="font-size:24px">₽</span>';
+            
+            const tbody = document.querySelector('#historyTable tbody');
+            tbody.innerHTML = '';
+            
+            history.slice(0, 10).forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${item.date}</td>
+                    <td>${item.type}</td>
+                    <td style="color:${item.amount > 0 ? '#00ff9d' : '#ff5252'}">${item.amount > 0 ? '+' : ''}${item.amount} ₽</td>
+                    <td>${item.status}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function createBileePayment() {
+            const amountInput = document.getElementById('amountInput');
+            let amount = parseInt(amountInput.value);
+
+            if (!amount || amount < 10 || amount > 10000) {
+                alert('Введите сумму от 10 до 10 000 ₽');
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_URL}/api/payment/create`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount })
+                });
+                const data = await res.json();
+
+                if (data.success && data.url) {
+                    window.location.href = data.url;
+                } else {
+                    alert(data.error || 'Ошибка создания платежа');
+                }
+            } catch (err) {
+                alert('Ошибка соединения с сервером');
+            }
+        }
+
+        function openTopupModal() {
+            document.getElementById("topupModal").style.display = "flex";
+            document.getElementById('amountInput').focus();
+        }
+
+        function closeModal() {
+            document.getElementById("topupModal").style.display = "none";
+        }
+
+        function logout() {
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            window.location.href = 'regorlog.html';
+        }
+
+        window.onload = () => {
+            if (!localStorage.getItem('accessToken')) {
+                window.location.href = 'regorlog.html';
+                return;
+            }
+
+            updateUI();
+
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('paid') === '1') {
+                document.getElementById('successMsg').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('successMsg').style.display = 'none';
+                    history.replaceState({}, document.title, window.location.pathname);
+                }, 5000);
+            }
+
+            document.addEventListener('keydown', e => {
+                if (e.key === "Escape") closeModal();
+            });
+        };
+    </script>
 </body>
 </html>
